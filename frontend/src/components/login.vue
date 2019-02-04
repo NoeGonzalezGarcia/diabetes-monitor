@@ -1,4 +1,3 @@
-
 <template>
   <v-form v-model="valid">
     <v-container bg fill-height grid-list-md text-xs-center>
