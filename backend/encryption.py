@@ -50,14 +50,14 @@ def multiplicative_inverse(e, nn):
         temp_nn = e
         e = temp2
         x = x2 - temp1 * x1
-        y = d - temp1 * y2
+        y = d - temp1 * y1
         x2 = x1
         x1 = x
         d = y1
         y1 = y
 
-    if temp_nn == 1
-    return d + nn
+    if temp_nn == 1:
+        return d + nn
 
 def gcd(a, b):
     while b != 0:
