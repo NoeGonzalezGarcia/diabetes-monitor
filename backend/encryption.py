@@ -1,47 +1,69 @@
 import math
 import random
 
-MAXNUM = 10000
-MINNUM = 1001
+MAXNUM = 1000
+MINNUM = 101
 LOWESTN = 1000
 
 #https://gist.github.com/JonCooperWorks/5314103
 def encrypt(key, n, message):
-    #text = [chr((char) ** key) % n for char in message]
-    text = [(ord(char) ** key) % n for char in message]
+    text = []
+    for char in message:
+        i = ord(char)
+        j = pow(i, key, n)
+        text.append(j)
     return text
 
 #https://gist.github.com/JonCooperWorks/5314103
 def decrypt(key, n, message):
-    #text = [chr((char) ** key) % n for char in message]
-    text = [chr((char ** key) % n) for char in message]
+    text = []
+    for char in message:
+        i = pow(char, key, n)
+        j = chr(i)
+        text.append(j)
     return ''.join(text)
 
 def generateKeys():
-    n = 1
-    while n < LOWESTN:
-        print("Getting prime 1")
-        p1 = getLargePrime(MAXNUM)
-        print("P1: ", p1)
-        print("Getting prime 2")
-        p2 = getLargePrime(MAXNUM)
-        print("P2: ", p2)
-        while p1 == p2:
-            print ("P2 was equal to P1 getting new P2")
+    k = 2
+    while is_Prime(k):
+        n = 1
+        while n < LOWESTN:
+            p1 = getLargePrime(MAXNUM)
             p2 = getLargePrime(MAXNUM)
-        n = p1 * p2
+            while p1 == p2:
+                p2 = getLargePrime(MAXNUM)
+            n = p1 * p2
 
-    nn = (p1 - 1) * (p2 - 1)
-    e = random.randrange(1, nn)
-
-    g = gcd(e, nn)
-    while g != 1:
-        e = random.randrange(1, nn)
-        g = gcd(e, nn)
-
-    d = multiplicative_inverse(e, nn)
+        print("P1: ", p1)
+        print("P2: ", p2)
+        nn = (p1 - 1) * (p2 - 1)
+    
+        k = nn + 1
         
+        d, e = mi2(k)
+
     return (n, e), (d, e)
+
+def mi2(v):
+    n = v
+    factors = []
+    while n % 2 == 0:
+        factors.append(2)
+        n = n / 2
+    for i in range(3, int(math.sqrt(n)) + 1, 2):
+        while n % i == 0:
+            factors.append(i)
+            n = n / i
+    if n > 2:
+        factors.append(n)
+
+    d = 1
+    for x in factors:
+        d *= x
+    e = factors[len(factors) - 1]
+    d /= e
+
+    return int(d), int(e)
 
 #https://gist.github.com/JonCooperWorks/5314103
 #Used to find the private key 
@@ -105,11 +127,11 @@ def main():
     publicCombo, privateCombo = generateKeys()
     n, e = publicCombo
     d, e = privateCombo
-    print("Public key: ", n, " Private key: ", d, " E value: ", e)
+    print("Public key: ", e, " Private key: ", d, " E value: ", n)
     message = input("Enter a message to encrypt: ")
-    encrypted = encrypt(n, e, message)
+    encrypted = encrypt(e, n, message)
     print("Encrypted message: ", encrypted)
-    decrypted = decrypt(d, e, encrypted)
+    decrypted = decrypt(d, n, encrypted)
     print("Decrypted message: ", decrypted)
 
 if __name__ == '__main__':
