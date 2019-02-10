@@ -45,7 +45,7 @@ def multiplicative_inverse(e, nn):
     temp_nn = nn
 
     while e > 0:
-        temp 1 = temp_nn / e
+        temp1 = temp_nn / e
         temp2 = temp_nn - temp1 * e
         temp_nn = e
         e = temp2
