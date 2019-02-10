@@ -16,7 +16,7 @@ export default new Router({
       path: '/daily',
       name: 'Health Information',
       component: LogData
-
+      
     }
   ]
 })
