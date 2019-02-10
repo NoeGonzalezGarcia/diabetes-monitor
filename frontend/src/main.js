@@ -4,10 +4,9 @@ import Vue from 'vue'
 import App from './App'
 import Vuetify from 'vuetify'
 import router from './router'
+import 'vuetify/dist/vuetify.min.css'
 
 Vue.config.productionTip = false
-
-import 'vuetify/dist/vuetify.min.css'
 
 Vue.use(Vuetify, {
   theme: {
@@ -15,7 +14,7 @@ Vue.use(Vuetify, {
     secondary: '#b0bec5',
     accent: '#8c9eff',
     error: '#b71c1c'
-  }});
+  }})
 
 /* eslint-disable no-new */
 new Vue({

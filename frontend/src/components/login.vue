@@ -39,7 +39,7 @@
                                 Sign In
                                 </v-btn>
                             </v-flex>
-                        </v-layout>  
+                        </v-layout>
                     </form>
                 </v-container>
             </v-card>
@@ -49,20 +49,20 @@
   </v-form>
 </template>
 <script>
-  export default {
-    name: 'Login',
-    data: () => ({
-      valid: false,
-      password: '',
-      passRules: [
-        v => !!v || 'Password is required',
-        v => v.length >= 8 || 'Password must be more than 8 characters'
-      ],
-      email: '',
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+/.test(v) || 'E-mail must be valid'
-      ]
-    })
-  }
+export default {
+  name: 'Login',
+  data: () => ({
+    valid: false,
+    password: '',
+    passRules: [
+      v => !!v || 'Password is required',
+      v => v.length >= 8 || 'Password must be more than 8 characters'
+    ],
+    email: '',
+    emailRules: [
+      v => !!v || 'E-mail is required',
+      v => /.+@.+/.test(v) || 'E-mail must be valid'
+    ]
+  })
+}
 </script>

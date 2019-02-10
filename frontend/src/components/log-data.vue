@@ -4,14 +4,14 @@
             <v-flex xs12 sm9 offset-sm2 align-center justify-center >
                 <v-card class="elevation-12" style="border-radius:25px;" height="800px">
                     <v-container>
-                    <h1>Hello INSERT NAME HERE</h1>
+                    <h1>Hello {{name}}</h1>
                         <form>
                             <h2 style="margin-top:40px">Breakfast</h2>
                             <v-layout row style="margin-top:15px">
                                 <v-flex md4>
                                     <v-text-field
                                         v-model="bCalories"
-                                        :rules="calorieRules"
+                                        :mask="calorieMask"
                                         label="Calories"
                                         color="blue"
                                     ></v-text-field>
@@ -19,7 +19,8 @@
                                 <v-flex md4>
                                     <v-text-field
                                         v-model="preBreakfastBloodSugar"
-                                        :rules="bloodSugar"
+                                        :rules="bloodSugarRules"
+                                        :mask="bloodSugarMask"
                                         label="Pre-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -27,18 +28,19 @@
                                 <v-flex md>
                                     <v-text-field
                                         v-model="postBreakfastBloodSugar"
-                                        :rules="bloodSugar"
+                                        :rules="bloodSugarRules"
+                                        :mask="bloodSugarMask"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
                                 </v-flex>
                             </v-layout>
-                            <h2 style="margin-top:100px">Lunch</h2>
+                            <h2 style="margin-top:140px">Lunch</h2>
                             <v-layout row>
                                 <v-flex md4>
                                     <v-text-field
                                         v-model="lCalories"
-                                        :rules="calorieRules"
+                                        :mask="calorieMask"
                                         label="Calories"
                                         color="blue"
                                     ></v-text-field>
@@ -46,7 +48,8 @@
                                 <v-flex md4>
                                     <v-text-field
                                         v-model="preLunchBloodSugar"
-                                        :rules="bloodSugar"
+                                        :rules="bloodSugarRules"
+                                        :mask="bloodSugarMask"
                                         label="Pre-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -54,18 +57,19 @@
                                 <v-flex md4>
                                     <v-text-field
                                         v-model="postLunchBloodSugar"
-                                        :rules="bloodSugar"
+                                        :rules="bloodSugarRules"
+                                        :mask="bloodSugarMask"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
                                 </v-flex>
                             </v-layout>
-                            <h2 style="margin-top:100px">Dinner</h2>
+                            <h2 style="margin-top:140px">Dinner</h2>
                             <v-layout row>
                                 <v-flex md4>
                                     <v-text-field
                                         v-model="dCalories"
-                                        :rules="calorieRules"
+                                        :mask="calorieMask"
                                         label="Calories"
                                         color="blue"
                                     ></v-text-field>
@@ -73,7 +77,8 @@
                                 <v-flex md4>
                                     <v-text-field
                                         v-model="preDinnerBloodSugar"
-                                        :rules="bloodSugar"
+                                        :rules="bloodSugarRules"
+                                        :mask="bloodSugarMask"
                                         label="Pre-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -81,12 +86,20 @@
                                 <v-flex md4>
                                     <v-text-field
                                         v-model="postDinnerBloodSugar"
-                                        :rules="bloodSugar"
+                                        :rules="bloodSugarRules"
+                                        :mask="bloodSugarMask"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
                                 </v-flex>
                             </v-layout>
+                             <v-layout row xs12>
+                            <v-flex>
+                                <v-btn flat block color="blue" @click.prevent="validateBeforeSubmit">
+                                Submit
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
                         </form>
                     </v-container>
                 </v-card>
@@ -95,15 +108,15 @@
     </v-container>
 </template>
 <script>
-  export default {
-    name: 'Login',
-    data: () => ({
-      valid: false,
-      password: '',
-      passRules: [
-        v => !!v || 'Password is required',
-        v => v.length >= 8 || 'Password must be more than 8 characters'
-      ]
-    })
-  }
+export default {
+  name: 'Login',
+  data: () => ({
+    name: 'Meredith',
+    calorieMask: '#####',
+    valid: false,
+    bloodSugarRules: [
+      v => /^[0-9]{2,3}$/.test(v) || 'Must be a valid blood sugar level'
+    ]
+  })
+}
 </script>
