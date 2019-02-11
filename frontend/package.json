@@ -16,6 +16,7 @@
     "chart.js": "^2.7.3",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
+    "vuejs-datepicker": "^1.5.4",
     "vuetify": "^1.4.4",
     "webpack-cli": "^3.2.3"
   },

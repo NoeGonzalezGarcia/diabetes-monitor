@@ -41,13 +41,14 @@ class dbWrapper:
     # Creates the SMBG data table if it doesn't exist already
     def __create_smbg_data_table(self):
         sql = "CREATE TABLE IF NOT EXISTS smbg_data (" \
-              "date DATE NOT NULL," \
+              "user_date_meal VARCHAR(20) NOT NULL," \
               "id INTEGER UNSIGNED NOT NULL," \
-              "meal-id INTEGER UNSIGNED NOT NULL," \
+              "meal_id INTEGER UNSIGNED NOT NULL," \
+              "date DATE NOT NULL," \
               "pre_meal_smbg_level INTEGER UNSIGNED NOT NULL," \
               "post_meal_smbg_level INTEGER UNSIGNED NOT NULL," \
               "caloric_intake INTEGER UNSIGNED NOT NULL," \
-              "PRIVATE KEY(date)," \
+              "PRIVATE KEY(user_date_meal)," \
               "FOREIGN KEY(id)," \
               "FOREIGN KEY(meal_id) );"
         self.__cur.execute(sql)
@@ -59,7 +60,7 @@ class dbWrapper:
               "meal_name VARCHAR(20) NOT NULL," \
               "PRIVATE KEY(meal_id) );"
         self.__cur.execute(sql)
-        meals = ["Breakfast", "Lunch", "Dinner"]
+        meals = ["breakfast", "lunch", "dinner"]
         for i, meal in meals:
             sql = "INSERT INTO meals (meal_id, meal_name)" \
                   "VALUES("+i+", "+meal+");"
@@ -113,8 +114,10 @@ class dbWrapper:
         id = self.__lookup_patient_id(username)
         date = self.__make_date(day, month, year)
         meal_id = self.__get_meal_index(meal)
-        sql = "INSERT INTO smbg_data (date, id, meal_id, pre_meal_smbg_level, post_meal_smbg_level, caloric_intake)" \
-              "VALUES("+date+", "+id+", "+meal_id+", "+pre_meal_smbg+", "+post_meal_smbg+", "+caloric_intake+");"
+        sql = "INSERT INTO smbg_data (user_date_meal, id, meal_id, date, " \
+              "pre_meal_smbg_level, post_meal_smbg_level, caloric_intake)" \
+              "VALUES("+id+"-"+date+"-"+meal_id+", "+id+", "+meal_id+", "+date+", " + \
+              pre_meal_smbg+", "+post_meal_smbg+", "+caloric_intake+");"
         self.__cur.execute(sql)
 
     # Returns a formatted date string with a given day, month, year.
@@ -123,11 +126,13 @@ class dbWrapper:
         return date.strftime('%Y-%m-%d')
 
     # Returns the meal index of the specified meal.
-    def __get_meal_index(self, meal):
-        sql = "SELECT meal_id FROM meals WHERE meal_name = '"+meal+"';"
+    def __get_meal_index(self, meal_name):
+        sql = "SELECT meal_id FROM meals WHERE meal_name = '"+meal_name+"';"
         self.__cur.execute(sql)
         return self.__cur.fetchone()
 
-    def get_smbg_data(self, username, day, month, year):
+    def get_smbg_data(self, username, day, month, year, meal_name):
         id = self.__lookup_patient_id(username)
-        # TODO: implement megit 
+        date = self.__make_date(day, month, year)
+        meal_id = self.__get_meal_index(meal_name)
+        # TODO: implement me
