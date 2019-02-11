@@ -95,7 +95,7 @@
                             </v-layout>
                              <v-layout row xs12>
                             <v-flex>
-                                <v-btn flat block color="blue" @click.prevent="validateBeforeSubmit">
+                                <v-btn flat block color="blue" @click="postPost()">
                                 Submit
                                 </v-btn>
                             </v-flex>
@@ -108,6 +108,8 @@
     </v-container>
 </template>
 <script>
+import axios from 'axios'
+
 export default {
   name: 'Log Data',
   data: () => ({
@@ -117,11 +119,17 @@ export default {
     bloodSugarRules: [
       v => /^[0-9]{2,3}$/.test(v) || 'Must be a valid blood sugar level'
     ]
-  })
-//   mounted () {
-//     axios
-//       .post('INSERT_ENDPOINT_HERE')
-//       .then(response => (this.data = response))
-//   }
+  }),
+  methods: {
+    postPost() {
+        axios.post(`http://127.0.0.1:5000/update_data`, {
+        body: this.name
+        })
+        .then(response => {})
+        .catch(e => {
+        this.errors.push(e)
+        })
+    }
+  }
 }
 </script>

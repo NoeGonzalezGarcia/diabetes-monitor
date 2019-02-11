@@ -33,6 +33,7 @@ def index():
 
 @app.route('/update_data', methods=['PUT'])
 def put_method():
+    print(request.json)
     if not request.json or "login_key" not in request.json or "row_key" not in request.json or "glucometer_data" not in request.json:
         abort(400)
     # make database call here
