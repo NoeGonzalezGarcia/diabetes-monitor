@@ -2,10 +2,10 @@ import math
 import random
 
 MAXNUM = 1000
+#MINNUM must be odd
 MINNUM = 101
 LOWESTN = 1000
 
-#https://gist.github.com/JonCooperWorks/5314103
 def encrypt(key, n, message):
     text = []
     for char in message:
@@ -14,7 +14,6 @@ def encrypt(key, n, message):
         text.append(j)
     return text
 
-#https://gist.github.com/JonCooperWorks/5314103
 def decrypt(key, n, message):
     text = []
     for char in message:
@@ -65,26 +64,6 @@ def mi2(v):
 
     return int(d), int(e)
 
-#https://gist.github.com/JonCooperWorks/5314103
-#Used to find the private key 
-def multiplicative_inverse(a, b):
-    x = 0
-    y = 1
-    lx = 1
-    ly = 0
-    oa = a
-    ob = b 
-    while b != 0:
-        q = a // b
-        (a, b) = (b, a % b)
-        (x, lx) = ((lx - (q * x)), x)
-        (y, ly) = ((ly - (q * y)), y)
-    if lx < 0:
-        lx += ob 
-    if ly < 0:
-        ly += oa
-    return lx
-
 def gcd(a, b):
     while b != 0:
         a, b = b, a % b
@@ -107,17 +86,3 @@ def is_Prime(number):
         if number % n == 0:
             return False
     return True
-
-def lcm(x, y):
-    if x > y:
-        greater = x
-    else:
-        greater = y
-      
-    while (True):
-        if ((greater % x == 0) and (greater % y == 0)):
-            lcm = greater
-            break
-        greater += 1
-
-    return lcm
