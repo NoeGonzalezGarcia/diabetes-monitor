@@ -103,6 +103,10 @@ class dbWrapper:
         self.__cur.execute(sql)
         return self.__cur.fetchone()
 
+    def get_patient_info(self, username):
+        id = self.__lookup_patient_id(username)
+        # TODO: implement me
+
     # Adds an smbg data entry into the smbg_data table, specific to a user's username and a date.
     # Has a meal which is either Breakfast, Lunch, or Dinner.
     def add_smbg_data(self, username, day, month, year, meal, pre_meal_smbg, post_meal_smbg, caloric_intake):
@@ -125,4 +129,5 @@ class dbWrapper:
         return self.__cur.fetchone()
 
     def get_smbg_data(self, username, day, month, year):
-
+        id = self.__lookup_patient_id(username)
+        # TODO: implement me
