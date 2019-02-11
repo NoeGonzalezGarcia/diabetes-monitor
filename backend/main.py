@@ -3,6 +3,8 @@ from pprint import pprint as pp
 from flask import Flask, flash, redirect, render_template, request, url_for, abort
 from flask_cors import CORS
 from .dbWrapper import *
+import dateparser
+
 app = Flask(__name__)
 CORS(app)
 wrapper = dbWrapper("admin", "admin")
@@ -30,9 +32,9 @@ def relogin():
     return "This method will reauthenticate the user with stored credentials"
 
 
-@app.route('/get_data', methods=['GET'])
+@app.route('/get_data/<', methods=['GET'])
 def index():
-    return "This web page is working.... -Eric"
+    print("placeholder")
 
 
 @app.route('/update_data', methods=['PUT'])
@@ -41,8 +43,7 @@ def put_method():
     if not request.json or "login_key" not in request.json or "row_key" not in request.json or "glucometer_data" not in request.json:
         abort(400)
     # make database call here
-
-    #act based upon database return
+    # act based upon database return
     if 'login_key' in request.json:
         return 'Success'
     else:
@@ -53,9 +54,18 @@ def put_method():
 def post_method():
     if not request.json:
         abort(404)
-    wrapper.add_smbg_data("admin", request.json['date']['day'], request.json['date']['month'],
-                          request.json['date']['year'], request.json['meal_type'], request.json['blood_sugar']['pre'],
-                          request.json['blood_sugar']['post'], request.json['calories'])
+    breakfast = request.json[1]
+    lunch = request.json[2]
+    dinner = request.json[3]
+    meals = {breakfast, lunch, dinner}
+    for i in meals:
+        current_object = i
+        if i['calories'] != "null":
+            date = parse_date(current_object['date'])
+            wrapper.add_smbg_data("admin", date[1], date[2],
+                                  date[3], current_object['meal_type'],
+                                  current_object['blood_sugar']['pre'],
+                                  current_object['blood_sugar']['post'], current_object['calories'])
     return "success"
 
 
@@ -65,5 +75,13 @@ def delete_entry():
     return "This delete method deletes a new entry based on login key, row key"
 
 
+def parse_date(date):
+    parsed_date = str(dateparser.parse(date)).split(" ")
+    parsed_date = parsed_date[0].split("-")
+    return parsed_date[1], parsed_date[2], parsed_date[0]
+
+
 if __name__=='__main__':
    app.run(debug=True)
+
+
