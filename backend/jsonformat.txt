@@ -1,20 +1,13 @@
 {
-    "eric_albrecht": {
-        "breakfast": {
-            "calories": 24,
-            "pre_meal_calories": 24,
-            "post_meal_calories": 65
-            },
-        "lunch": {
-            "calories": 33,
-            "pre_meal_calories": 24,
-            "post_meal_calories": 90
-            },
-        "dinner": {
-            "calories": 24,
-            "pre_meal_calories": 24,
-            "post_meal_calories": 65
-            }
-    },
-    "password": "encrypted"
+	"meal_type": "breakfast",
+	"calories": 120,
+	"blood_sugar": {
+		"pre": 123,
+		"post": 345
+	},
+	"date": {
+	    "day": 23,
+	    "month": 12,
+	    "year": 1998
+	}
 }

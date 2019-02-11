@@ -125,4 +125,4 @@ class dbWrapper:
         return self.__cur.fetchone()
 
     def get_smbg_data(self, username, day, month, year):
-
+        return "placeholder"

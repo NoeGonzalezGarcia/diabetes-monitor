@@ -2,14 +2,11 @@
 from pprint import pprint as pp
 from flask import Flask, flash, redirect, render_template, request, url_for, abort
 from flask_cors import CORS
-# from weather import query_api
-
+from .dbWrapper import *
 app = Flask(__name__)
 CORS(app)
-
-current_time = 0
-username = ""
-password = ""
+wrapper = dbWrapper("admin", "admin")
+wrapper.add_patient("I live horribly", 1, "admin", "1234", "Joe", "R", "Smith")
 
 
 @app.route('/heartbeat', methods=['GET'])
@@ -52,9 +49,14 @@ def put_method():
         return 'Failure'
 
 
-@app.route('/new_data', methods=['POST'])
+@app.route('/new_data', methods=['PUT'])
 def post_method():
-    return "This post requires an input of login key, new information"
+    if not request.json:
+        abort(404)
+    wrapper.add_smbg_data("admin", request.json['date']['day'], request.json['date']['month'],
+                          request.json['date']['year'], request.json['meal_type'], request.json['blood_sugar']['pre'],
+                          request.json['blood_sugar']['post'], request.json['calories'])
+    return "success"
 
 
 @app.route('/delete/<login_key>/<row_key>', methods=['DELETE'])
