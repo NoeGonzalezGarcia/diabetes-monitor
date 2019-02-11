@@ -1,5 +1,6 @@
 import MySQLdb
 import datetime
+import json
 
 
 class dbWrapper:
@@ -96,13 +97,13 @@ class dbWrapper:
         sql = "SELECT 'AUTO_INCREMENT' FROM INFORMATION_SCHEMA.TABLES" \
               "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_info';"
         self.__cur.execute(sql)
-        return self.__cur.fetchone()
+        return self.__cur.fetchone()["'AUTO_INCREMENT'"]
 
     # Gets the id of a user from their username.
     def __lookup_patient_id(self, username):
         sql = "SELECT id FROM user_lookup WHERE username = '"+username+"';"
         self.__cur.execute(sql)
-        return self.__cur.fetchone()
+        return self.__cur.fetchone()["id"]
 
     def get_patient_info(self, username):
         id = self.__lookup_patient_id(username)
@@ -110,9 +111,8 @@ class dbWrapper:
 
     # Adds an smbg data entry into the smbg_data table, specific to a user's username and a date.
     # Has a meal which is either Breakfast, Lunch, or Dinner.
-    def add_smbg_data(self, username, day, month, year, meal, pre_meal_smbg, post_meal_smbg, caloric_intake):
+    def add_smbg_data(self, username, date, meal, pre_meal_smbg, post_meal_smbg, caloric_intake):
         id = self.__lookup_patient_id(username)
-        date = self.__make_date(day, month, year)
         meal_id = self.__get_meal_index(meal)
         sql = "INSERT INTO smbg_data (user_date_meal, id, meal_id, date, " \
               "pre_meal_smbg_level, post_meal_smbg_level, caloric_intake)" \
@@ -129,10 +129,30 @@ class dbWrapper:
     def __get_meal_index(self, meal_name):
         sql = "SELECT meal_id FROM meals WHERE meal_name = '"+meal_name+"';"
         self.__cur.execute(sql)
-        return self.__cur.fetchone()
+        return self.__cur.fetchone()["meal_id"]
 
-    def get_smbg_data(self, username, day, month, year, meal_name):
+    # Returns SMBG data as JSON for a particular username, on a particular date and meal_name
+    def get_smbg_data(self, username, date, meal_name):
         id = self.__lookup_patient_id(username)
-        date = self.__make_date(day, month, year)
         meal_id = self.__get_meal_index(meal_name)
-        # TODO: implement me
+        return self.__get_meal_data(id, date, meal_id)
+
+    # Returns SMBG data as JSON given a user id, date, and meal id
+    def __get_meal_data(self, user_id, date, meal_id):
+        key = user_id+"_"+date+"_"+meal_id
+        sql = "SELECT user_date_meal, pre_meal_smbg_level, post_meal_smbg_level, caloric_intake FROM smbg_data" \
+              "WHERE user_date_meal = '"+key+"';"
+        self.__cur.execute(sql)
+        row = self.__cur.fetchone()
+        pre_meal_smbg = row["pre_meal_smbg_level"]
+        post_meal_smbg = row["post_meal_smbg_level"]
+        caloric_intake = row["caloric_intake"]
+        return self.__create_meal_json_object(pre_meal_smbg, post_meal_smbg, caloric_intake)
+
+    # Creates a JSON of for a meal's SMBG data.
+    def __create_meal_json_object(self, pre_meal_smbg, post_meal_smbg, caloric_intake):
+        data = {}
+        data['pre_meal_smbg'] = pre_meal_smbg
+        data['post_meal_smbg'] = post_meal_smbg
+        data['caloric_intake'] = caloric_intake
+        return json.dumps(data)
