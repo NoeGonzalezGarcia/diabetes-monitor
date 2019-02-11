@@ -6,6 +6,11 @@
                     <v-container>
                     <h1>Hello {{name}}</h1>
                         <form>
+                            <v-layout row style="margin-top:15px">
+                                <v-flex md4>
+                                    <datepicker v-on:selected="getDate" :value='new Date()'></datepicker>
+                                </v-flex>
+                            </v-layout>
                             <h2 style="margin-top:40px">Breakfast</h2>
                             <v-layout row style="margin-top:15px">
                                 <v-flex md4>
@@ -20,7 +25,6 @@
                                     <v-text-field
                                         v-model="preBreakfastBloodSugar"
                                         :rules="bloodSugarRules"
-                                        :mask="bloodSugarMask"
                                         label="Pre-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -29,7 +33,6 @@
                                     <v-text-field
                                         v-model="postBreakfastBloodSugar"
                                         :rules="bloodSugarRules"
-                                        :mask="bloodSugarMask"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -49,7 +52,6 @@
                                     <v-text-field
                                         v-model="preLunchBloodSugar"
                                         :rules="bloodSugarRules"
-                                        :mask="bloodSugarMask"
                                         label="Pre-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -58,7 +60,6 @@
                                     <v-text-field
                                         v-model="postLunchBloodSugar"
                                         :rules="bloodSugarRules"
-                                        :mask="bloodSugarMask"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -78,7 +79,6 @@
                                     <v-text-field
                                         v-model="preDinnerBloodSugar"
                                         :rules="bloodSugarRules"
-                                        :mask="bloodSugarMask"
                                         label="Pre-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -87,7 +87,6 @@
                                     <v-text-field
                                         v-model="postDinnerBloodSugar"
                                         :rules="bloodSugarRules"
-                                        :mask="bloodSugarMask"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -109,11 +108,21 @@
 </template>
 <script>
 import axios from 'axios'
-
+import Datepicker from 'vuejs-datepicker'
 export default {
-  name: 'Log Data',
+  name: 'LogData',
   data: () => ({
     name: 'Meredith',
+    date: new Date().toString,
+    bCalories: '',
+    lCalories: '',
+    dCalories: '',
+    preBreakfastBloodSugar: '',
+    postBreakfastBloodSugar: '',
+    preLunchBloodSugar: '',
+    postLunchBloodSugar: '',
+    preDinnerBloodSugar: '',
+    postDinnerBloodSugar: '',
     calorieMask: '#####',
     valid: false,
     bloodSugarRules: [
@@ -122,14 +131,56 @@ export default {
   }),
   methods: {
     postPost() {
-        axios.post(`http://127.0.0.1:5000/update_data`, {
-        body: this.name
+        console.log(bCalories)
+        const resp = '{'
+            +'Mealtype: Breakfast'
+            +'Calories: ' + bCalories
+            +'BloodSugar: {'
+            +'pre: ' + preBreakfastBloodSugar
+            +'post: ' +postBreakfastBloodSugar
+            +'}'
+            +'Date: ' + date
+        +'},'
+        +'{'
+            +'Mealtype: Lunch'
+            +'Calories: ' + lCalories
+            +'BloodSugar: {'
+            +'pre: ' + preLunchBloodSugar
+            +'post: ' +postLunchBloodSugar
+            +'}'
+            +'Date: ' + date
+        +'},'
+        +'{'
+            +'Mealtype: Dinner'
+            +'Calories: ' + dCalories
+            +'BloodSugar: {'
+            +'pre: ' + preDinnerBloodSugar
+            +'post: ' +postDinnerBloodSugar
+            +'}'
+            +'Date: ' + date
+        +'}'
+        axios.put(`http://127.0.0.1:5000/update_data`, {
+        body: resp
         })
         .then(response => {})
         .catch(e => {
         this.errors.push(e)
         })
+    }, 
+    getDate(date){
+        date: date.toString()
     }
+  },
+  components: {
+    Datepicker
   }
 }
 </script>
+<style>
+.example {
+  background: #7e7b7b;
+  border: 1px solid #ddd;
+  padding: 0em 1em 1em;
+  margin-bottom: 2em;
+}
+</style>
