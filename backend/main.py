@@ -1,13 +1,20 @@
 #!/usr/bin/env python
 from pprint import pprint as pp
 from flask import Flask, flash, redirect, render_template, request, url_for, abort
+from flask_cors import CORS
 # from weather import query_api
 
 app = Flask(__name__)
+CORS(app)
 
 current_time = 0
 username = ""
 password = ""
+
+
+@app.route('/heartbeat', methods=['GET'])
+def heartbeat():
+    return "working"
 
 
 @app.route('/login', methods=['POST'])
