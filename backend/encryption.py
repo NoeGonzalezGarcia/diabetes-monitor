@@ -41,7 +41,7 @@ def generateKeys():
         
         d, e = mi2(k)
 
-    return (n, e), (d, e)
+    return (n), (d, e)
 
 def mi2(v):
     n = v
