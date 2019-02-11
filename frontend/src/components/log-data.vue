@@ -117,11 +117,11 @@ export default {
     bloodSugarRules: [
       v => /^[0-9]{2,3}$/.test(v) || 'Must be a valid blood sugar level'
     ]
-  }),
-  mounted () {
-    axios
-      .post('INSERT_ENDPOINT_HERE')
-      .then(response => (this.data = response))
-  }
+  })
+//   mounted () {
+//     axios
+//       .post('INSERT_ENDPOINT_HERE')
+//       .then(response => (this.data = response))
+//   }
 }
 </script>
