@@ -11,7 +11,7 @@ def main():
     while 1 == 1:
         time.sleep(2)
         try:
-            r = requests.get('http://127.0.0.1:5000/heartbeat1')
+            r = requests.get('http://127.0.0.1:5000/heartbeat')
             if r.content == b'working':
                 print("Connected: " + str(datetime.now()))
             else:

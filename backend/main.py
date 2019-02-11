@@ -10,6 +10,11 @@ username = ""
 password = ""
 
 
+@app.route('/heartbeat', methods=['GET'])
+def heartbeat():
+    return "working"
+
+
 @app.route('/login', methods=['POST'])
 def login():
     if not request.json or "username" not in request.json or "password" not in request.json:
