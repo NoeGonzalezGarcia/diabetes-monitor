@@ -1,0 +1,20 @@
+{
+    "eric_albrecht": {
+        "breakfast": {
+            "calories": 24,
+            "pre_meal_calories": 24,
+            "post_meal_calories": 65
+            },
+        "lunch": {
+            "calories": 33,
+            "pre_meal_calories": 24,
+            "post_meal_calories": 90
+            },
+        "dinner": {
+            "calories": 24,
+            "pre_meal_calories": 24,
+            "post_meal_calories": 65
+            }
+    },
+    "password": "encrypted"
+}
