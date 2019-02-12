@@ -48,7 +48,7 @@ export default {
                 var temp = ''
                 axios.get(`http://127.0.0.1:5000/get_data/`+ new Date().toString()+ '/Breakfast')
                 .then(function (response) {
-                    temp = response.data
+                    this.temp = response.data
                 })
                 .catch(e => {
                     this.errors.push(e)
