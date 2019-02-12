@@ -43,8 +43,8 @@ def get_user_date_meal(date, meal):
     print(date)
     print(meal)
     if date != "" and (meal == "Breakfast" or meal == "Lunch" or meal == "Dinner"):
-        print(wrapper.get_smbg_data(username, date_parsed, meal))
-        return wrapper.get_smbg_data(username, date_parsed, meal)
+        print(wrapper.get_smbg_data(username, date_parsed, meal, pri, e))
+        return wrapper.get_smbg_data(username, date_parsed, meal, pri, e)
     return ""
 
 
@@ -77,9 +77,9 @@ def post_method():
         current_object = i
         if i['Calories'] != "":
             date = parse_date(current_object['Date'])
-            wrapper.add_smbg_data("admin2", date, current_object['Mealtype'],
-                                  current_object['BloodSugar']['pre'],
-                                  current_object['BloodSugar']['post'], current_object['Calories'])
+            wrapper.add_smbg_data("admin2", date, encrypt(pub, e, current_object['Mealtype']),
+                                  encrypt(pub, e, current_object['BloodSugar']['pre']),
+                                  encrypt(pub, e, current_object['BloodSugar']['post']), encrypt(pub, e, current_object['Calories']))
     return "success"
 
 
