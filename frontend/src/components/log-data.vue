@@ -15,7 +15,7 @@
                             <v-layout row style="margin-top:15px">
                                 <v-flex md4>
                                     <v-text-field
-                                        v-model="bCalories"
+                                        v-model="resp[0].Calories"
                                         :mask="calorieMask"
                                         label="Calories"
                                         color="blue"
@@ -23,7 +23,7 @@
                                 </v-flex>
                                 <v-flex md4>
                                     <v-text-field
-                                        v-model="preBreakfastBloodSugar"
+                                        v-model="resp[0].BloodSugar.pre"
                                         :rules="bloodSugarRules"
                                         label="Pre-Meal Blood Sugar"
                                         color="blue"
@@ -31,7 +31,7 @@
                                 </v-flex>
                                 <v-flex md>
                                     <v-text-field
-                                        v-model="postBreakfastBloodSugar"
+                                        v-model="resp[0].BloodSugar.post"
                                         :rules="bloodSugarRules"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
@@ -42,7 +42,7 @@
                             <v-layout row>
                                 <v-flex md4>
                                     <v-text-field
-                                        v-model="lCalories"
+                                        v-model="resp[1].Calories"
                                         :mask="calorieMask"
                                         label="Calories"
                                         color="blue"
@@ -50,7 +50,7 @@
                                 </v-flex>
                                 <v-flex md4>
                                     <v-text-field
-                                        v-model="preLunchBloodSugar"
+                                        v-model="resp[1].BloodSugar.pre"
                                         :rules="bloodSugarRules"
                                         label="Pre-Meal Blood Sugar"
                                         color="blue"
@@ -58,7 +58,7 @@
                                 </v-flex>
                                 <v-flex md4>
                                     <v-text-field
-                                        v-model="postLunchBloodSugar"
+                                        v-model="resp[1].BloodSugar.post"
                                         :rules="bloodSugarRules"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
@@ -69,7 +69,7 @@
                             <v-layout row>
                                 <v-flex md4>
                                     <v-text-field
-                                        v-model="dCalories"
+                                        v-model="resp[2].Calories"
                                         :mask="calorieMask"
                                         label="Calories"
                                         color="blue"
@@ -77,7 +77,7 @@
                                 </v-flex>
                                 <v-flex md4>
                                     <v-text-field
-                                        v-model="preDinnerBloodSugar"
+                                        v-model="resp[2].BloodSugar.pre"
                                         :rules="bloodSugarRules"
                                         label="Pre-Meal Blood Sugar"
                                         color="blue"
@@ -85,7 +85,7 @@
                                 </v-flex>
                                 <v-flex md4>
                                     <v-text-field
-                                        v-model="postDinnerBloodSugar"
+                                        v-model="resp[2].BloodSugar.pre"
                                         :rules="bloodSugarRules"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
@@ -112,17 +112,34 @@ import Datepicker from 'vuejs-datepicker'
 export default {
   name: 'LogData',
   data: () => ({
-    name: 'Meredith',
-    date: new Date().toString,
-    bCalories: '',
-    lCalories: '',
-    dCalories: '',
-    preBreakfastBloodSugar: '',
-    postBreakfastBloodSugar: '',
-    preLunchBloodSugar: '',
-    postLunchBloodSugar: '',
-    preDinnerBloodSugar: '',
-    postDinnerBloodSugar: '',
+    resp: [{
+        Mealtype: 'Breakfast',
+        Calories: '',
+        BloodSugar: {
+            pre: '',
+            post: ''
+        }, 
+        Date: '',
+        name: 'Meredith'
+    },{
+        Mealtype: 'Lunch',
+        Calories: '',
+        BloodSugar: {
+            pre: '',
+            post: ''
+        }, 
+        Date: '',
+        name: 'Meredith'
+    },{
+        Mealtype: 'Dinner',
+        Calories: '',
+        BloodSugar: {
+            pre: '',
+            post: ''
+        }, 
+        Date: '',
+        name: 'Meredith'
+    }],
     calorieMask: '#####',
     valid: false,
     bloodSugarRules: [
@@ -131,36 +148,8 @@ export default {
   }),
   methods: {
     postPost() {
-        console.log(bCalories)
-        const resp = '{'
-            +'Mealtype: Breakfast'
-            +'Calories: ' + bCalories
-            +'BloodSugar: {'
-            +'pre: ' + preBreakfastBloodSugar
-            +'post: ' +postBreakfastBloodSugar
-            +'}'
-            +'Date: ' + date
-        +'},'
-        +'{'
-            +'Mealtype: Lunch'
-            +'Calories: ' + lCalories
-            +'BloodSugar: {'
-            +'pre: ' + preLunchBloodSugar
-            +'post: ' +postLunchBloodSugar
-            +'}'
-            +'Date: ' + date
-        +'},'
-        +'{'
-            +'Mealtype: Dinner'
-            +'Calories: ' + dCalories
-            +'BloodSugar: {'
-            +'pre: ' + preDinnerBloodSugar
-            +'post: ' +postDinnerBloodSugar
-            +'}'
-            +'Date: ' + date
-        +'}'
         axios.put(`http://127.0.0.1:5000/update_data`, {
-        body: resp
+        body: this.resp
         })
         .then(response => {})
         .catch(e => {
@@ -168,7 +157,9 @@ export default {
         })
     }, 
     getDate(date){
-        date: date.toString()
+        this.resp[0].date = date.toString()
+        this.resp[1].date = date.toString()
+        this.resp[2].date = date.toString()
     }
   },
   components: {
