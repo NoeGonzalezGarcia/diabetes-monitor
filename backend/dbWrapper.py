@@ -148,7 +148,9 @@ class dbWrapper:
     def __get_meal_index(self, meal_name):
         sql = "SELECT meal_id FROM meals WHERE meal_name = '"+meal_name+"';"
         self.__cur.execute(sql)
-        return self.__cur.fetchone()["meal_id"]
+        result = self.__cur.fetchone()
+        a,b = result + (0, )
+        return result[0]
 
     # Returns SMBG data as JSON for a particular username, on a particular date and meal_name
     def get_smbg_data(self, username, date, meal_name):
