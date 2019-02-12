@@ -25,7 +25,7 @@ export default {
             labels: ['Calories, Pre Meal, Post Meal'],
             datasets: [{
                 label: 'Blood Glucose',
-                data: [resp.caloric_intake, resp.pre_meal_smbg, resp.post_meal_smbg],
+                data: [this.resp.caloric_intake, this.resp.pre_meal_smbg, this.resp.post_meal_smbg],
                 borderColor: [
                     'rgba(255, 159, 64, 1)'
                 ],
