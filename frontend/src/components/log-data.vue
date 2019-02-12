@@ -148,7 +148,7 @@ export default {
   }),
   methods: {
     postPost() {
-        axios.put(`http://127.0.0.1:5000/update_data`, {
+        axios.put(`http://127.0.0.1:5000/new_data`, {
         body: this.resp
         })
         .then(response => {})
