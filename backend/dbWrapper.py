@@ -1,7 +1,7 @@
 import MySQLdb
 import datetime
 import json
-from .encryption import *
+import encrypt, decrypt
 
 
 class dbWrapper:
