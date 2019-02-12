@@ -53,6 +53,7 @@ export default {
                     this.errors.push(e)
                 })
                 this.resp = self.resp
+                console.log("Response: " + this.resp)
             }
         },
         beforeMount(){
