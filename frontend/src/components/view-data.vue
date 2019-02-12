@@ -45,14 +45,15 @@ export default {
 },      methods: {
             Getget() {
                 var self = this
+                var temp = {}
                 axios.get(`http://127.0.0.1:5000/get_data/`+ new Date().toString()+ '/Breakfast')
                 .then(function (response) {
-                self.resp = response.data
+                temp = response.data
                 })
                 .catch(e => {
                     this.errors.push(e)
                 })
-                this.resp = self.resp
+                this.resp = temp
                 console.log("Response: " + this.resp)
             }
         },
