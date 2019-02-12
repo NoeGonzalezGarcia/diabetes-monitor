@@ -12,12 +12,12 @@ class dbWrapper:
         self.__cur = self.__db.cursor()
         sql = "CREATE DATABASE IF NOT EXISTS diabetes_monitor"
         self.__cur.execute(sql)
-        self.__create_user_info_table()
-        self.__create_patient_table()
-        self.__create_smbg_data_table()
-        self.__create_meals_table()
         sql = "USE diabetes_monitor"
         self.__cur.execute(sql)
+        self.__create_user_info_table()
+        self.__create_patient_table()
+        self.__create_meals_table()
+        self.__create_smbg_data_table()
 
     # Creates the user_info table if it doesn't exist already
     def __create_user_info_table(self):
@@ -36,7 +36,7 @@ class dbWrapper:
               "id INTEGER UNSIGNED NOT NULL," \
               "lifestyle_info VARCHAR(10000)," \
               "diabetes_type INTEGER UNSIGNED NOT NULL," \
-              "FOREIGN KEY (id) )"
+              "FOREIGN KEY (id) REFERENCES user_info(id) )"
         self.__cur.execute(sql)
 
     # Creates the SMBG data table if it doesn't exist already
@@ -49,9 +49,9 @@ class dbWrapper:
               "pre_meal_smbg_level INTEGER UNSIGNED NOT NULL," \
               "post_meal_smbg_level INTEGER UNSIGNED NOT NULL," \
               "caloric_intake INTEGER UNSIGNED NOT NULL," \
-              "PRIVATE KEY(user_date_meal)," \
-              "FOREIGN KEY(id)," \
-              "FOREIGN KEY(meal_id) );"
+              "PRIMARY KEY (user_date_meal)," \
+              "FOREIGN KEY (id) REFERENCES user_info(id)," \
+              "FOREIGN KEY (meal_id) REFERENCES meals(meal_id) )"
         self.__cur.execute(sql)
 
     # Creates the meals table if it doesn't exist already. Includes Breakfast, Lunch, and Dinner.
@@ -59,12 +59,12 @@ class dbWrapper:
         sql = "CREATE TABLE IF NOT EXISTS meals (" \
               "meal_id INTEGER UNSIGNED NOT NULL," \
               "meal_name VARCHAR(20) NOT NULL," \
-              "PRIVATE KEY(meal_id) );"
+              "PRIMARY KEY (meal_id) )"
         self.__cur.execute(sql)
         meals = ["breakfast", "lunch", "dinner"]
-        for i, meal in meals:
+        for i, meal in enumerate(meals):
             sql = "INSERT INTO meals (meal_id, meal_name)" \
-                  "VALUES("+i+", "+meal+");"
+                  "VALUES("+str(i)+", '"+meal+"');"
             self.__cur.execute(sql)
 
     # Creates the user_lookup table if it doesn't exist already.
@@ -73,8 +73,8 @@ class dbWrapper:
         sql = "CREATE TABLE IF NOT EXISTS user_lookup (" \
               "username VARCHAR(80) NOT NULL," \
               "id INTEGER UNSIGNED NOT NULL," \
-              "PRIVATE KEY(username)," \
-              "FOREIGN KEY(id) );"
+              "PRIMARY KEY(username)," \
+              "FOREIGN KEY (id) REFERENCES user_info(id) )"
         self.__cur.execute(sql)
 
     # Adds a new patient to the database. Users id's are auto-incremented.
