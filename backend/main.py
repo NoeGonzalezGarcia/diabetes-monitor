@@ -15,6 +15,9 @@ wrapper.add_patient(5, "I live wonderfully", 1, username, "1234", "Joe", "R", "S
 e, keyCombo = encryption.generateKeys()
 pub, pri = keyCombo
 
+currentE, currentKeyCombo = 0, (0, 0)
+currentPub, currentPri = currentKeyCombo
+
 
 @app.route('/heartbeat', methods=['GET'])
 def heartbeat():
@@ -37,14 +40,16 @@ def relogin():
     return "This method will reauthenticate the user with stored credentials"
 
 
-@app.route('/get_data/<date>/<meal>', methods=['GET'])
-def get_user_date_meal(date, meal):
+@app.route('/get_data/<date>/<meal>/<publicKey>/<publicE>', methods=['GET'])
+def get_user_date_meal(date, meal, publicKey, publicE):
     date_parsed = parse_date(date)
     print(date)
     print(meal)
+    print(publicKey)
+    print(publicE)
     if date != "" and (meal == "Breakfast" or meal == "Lunch" or meal == "Dinner"):
-        print(wrapper.get_smbg_data(username, date_parsed, meal, pri, e))
-        return wrapper.get_smbg_data(username, date_parsed, meal, pri, e)
+        print(wrapper.get_smbg_data(username, date_parsed, meal, pri, e, publicKey, publicE))
+        return wrapper.get_smbg_data(username, date_parsed, meal, pri, e, publicKey, publicE)
     return ""
 
 
@@ -60,6 +65,11 @@ def put_method():
     else:
         return 'Failure'
 
+@app.route('/get_key', methods=['GET'])
+def get_key_method():
+    currentE, currentKeyCombo = encryption.generateKeys()
+    currentPub, currentPri = currentKeyCombo
+    return currentPub + ' ' + currentE
 
 @app.route('/new_data', methods=['PUT'])
 def post_method():
@@ -78,8 +88,8 @@ def post_method():
         if i['Calories'] != "":
             date = parse_date(current_object['Date'])
             wrapper.add_smbg_data("admin2", date, current_object['Mealtype'],
-                                  encryption.encrypt(pub, e, current_object['BloodSugar']['pre']),
-                                  encryption.encrypt(pub, e, current_object['BloodSugar']['post']), encryption.encrypt(pub, e, current_object['Calories']))
+                                  encryption.decrypt(currentPri, currentE, encryption.encrypt(pub, e, current_object['BloodSugar']['pre'])),
+                                  encryption.decrypt(currentPri, currentE, encryption.encrypt(pub, e, current_object['BloodSugar']['post'])), encryption.decrypt(currentPri, currentE, encryption.encrypt(pub, e, current_object['Calories'])))
     return "success"
 
 

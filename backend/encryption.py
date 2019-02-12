@@ -18,12 +18,14 @@ def encrypt(key, n, message):
     return res
 
 def decrypt(key, n, message):
-    text = []
-    for char in message:
-        i = pow(char, key, n)
-        j = chr(i)
-        text.append(j)
-    return ''.join(text)
+    text = message.split(" ")
+    res = []
+    for char in text:
+        if char != '':
+            i = pow(int(char), key, n)
+            j = chr(i)
+            res.append(j)
+    return ''.join(res)
 
 def generateKeys():
     k = 2
