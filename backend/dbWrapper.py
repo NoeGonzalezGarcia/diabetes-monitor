@@ -193,7 +193,7 @@ class dbWrapper:
         text = message.split(" ")
         res = []
         for char in text:
-            i = pow(char, key, n)
+            i = pow(int(char), key, n)
             j = chr(i)
             res.append(j)
         return ''.join(res)
