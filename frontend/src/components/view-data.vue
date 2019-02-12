@@ -47,12 +47,12 @@ export default {
                 var self = this
                 axios.get(`http://127.0.0.1:5000/get_data/`+ new Date().toString()+ '/Breakfast')
                 .then((response) => {
-                self.resp = response
+                self.resp = response.data
                 })
                 .catch(e => {
                     this.errors.push(e)
                 })
-                console.log(this.resp)
+                console.log(self.resp)
             }
         },
         beforeMount(){
