@@ -41,7 +41,7 @@ export default {
 },      methods: {
             Getget() {
                 let resp = ''
-                axios.get(`http://127.0.0.1:5000/get_data/`+ new Date().toString()+ '/breakfast')
+                axios.get(`http://127.0.0.1:5000/get_data/`+ new Date().toString()+ '/Breakfast')
                 .then(response => {this.resp = response})
                 .catch(e => {
                     this.errors.push(e)
