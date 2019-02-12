@@ -14,7 +14,7 @@ def encrypt(key, n, message):
         text.append(j)
     res = ''
     for s in text:
-        res = res + s + ' '
+        res = res + str(s) + ' '
     return res
 
 def decrypt(key, n, message):
