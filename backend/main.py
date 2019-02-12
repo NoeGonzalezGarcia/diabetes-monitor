@@ -40,6 +40,7 @@ def relogin():
 @app.route('/get_data/<date>/<meal>', methods=['GET'])
 def get_user_date_meal(date, meal):
     date_parsed = parse_date(date)
+    print('OIY')
     print(date)
     print(meal)
     if date != "" and (meal == "Breakfast" or meal == "Lunch" or meal == "Dinner"):
