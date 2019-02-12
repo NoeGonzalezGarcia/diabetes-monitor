@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import threading
+import webbrowser
 
 import dateparser
 from flask import Flask, request, abort
@@ -106,6 +108,10 @@ def parse_date(date):
 
 
 if __name__=='__main__':
-   app.run(debug=False)
+    put_url = "http://localhost:8080/#/daily"
+    get_url = "http://localhost:8080/#/view-data"
+    threading.Timer(1, lambda: webbrowser.open(put_url)).start()
+    threading.Timer(1, lambda: webbrowser.open(get_url)).start()
+    app.run(debug=False)
 
 
