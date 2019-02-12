@@ -119,7 +119,7 @@ export default {
             pre: '',
             post: ''
         }, 
-        Date: '',
+        Date: new Date().toString(),
         name: 'Meredith'
     },{
         Mealtype: 'Lunch',
@@ -128,7 +128,7 @@ export default {
             pre: '',
             post: ''
         }, 
-        Date: '',
+        Date: new Date().toString(),
         name: 'Meredith'
     },{
         Mealtype: 'Dinner',
@@ -137,7 +137,7 @@ export default {
             pre: '',
             post: ''
         }, 
-        Date: '',
+        Date: new Date().toString(),
         name: 'Meredith'
     }],
     calorieMask: '#####',
