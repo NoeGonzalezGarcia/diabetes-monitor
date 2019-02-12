@@ -167,7 +167,7 @@ class dbWrapper:
         return self.__get_meal_data(id, date, meal_id, pri, e)
 
     # Returns SMBG data as JSON given a user id, date, and meal id
-    def __get_meal_data(self, user_id, date, meal_id, pri, e):
+    def __get_meal_data(self, user_id, date, meal_id, pri, e, publicKey, publicE):
         date_formatted = date[2] + "-" + date[0] + "-" + date[1]
         key = "'" + str(user_id) + "-" + date_formatted + "-" + str(meal_id) + "'"
         sql = "SELECT user_date_meal, pre_meal_smbg_level, post_meal_smbg_level, caloric_intake FROM smbg_data" \
@@ -179,14 +179,14 @@ class dbWrapper:
         pre_meal_smbg = row[1]
         post_meal_smbg = row[2]
         caloric_intake = row[3]
-        return self.__create_meal_json_object(pre_meal_smbg, post_meal_smbg, caloric_intake, pri, e)
+        return self.__create_meal_json_object(pre_meal_smbg, post_meal_smbg, caloric_intake, pri, e, publicKey, publicE)
 
     # Creates a JSON of for a meal's SMBG data.
-    def __create_meal_json_object(self, pre_meal_smbg, post_meal_smbg, caloric_intake, pri, e):
+    def __create_meal_json_object(self, pre_meal_smbg, post_meal_smbg, caloric_intake, pri, e, publicKey, publicE):
         data = {}
-        data['pre_meal_smbg'] = self.decrypt2(pri, e, pre_meal_smbg)
-        data['post_meal_smbg'] = self.decrypt2(pri, e, post_meal_smbg)
-        data['caloric_intake'] = self.decrypt2(pri, e, caloric_intake)
+        data['pre_meal_smbg'] = self.encrypt2(publicKey, publicE, self.decrypt2(pri, e, pre_meal_smbg))
+        data['post_meal_smbg'] = self.encrypt2(publicKey, publicE, self.decrypt2(pri, e, post_meal_smbg))
+        data['caloric_intake'] = self.encrypt2(publicKey, publicE, self.decrypt2(pri, e, caloric_intake))
         return json.dumps(data)
 
     def decrypt2(self, key, n, message):
@@ -198,3 +198,14 @@ class dbWrapper:
                 j = chr(i)
                 res.append(j)
         return ''.join(res)
+
+    def encrypt2(self, key, n, message):
+        text = []
+        for char in message:
+            i = ord(char) #character to unicode
+            j = pow(i, key, n)
+            text.append(j)
+        res = ''
+        for s in text:
+            res = res + str(s) + ' '
+        return res
