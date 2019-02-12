@@ -14,6 +14,8 @@ class dbWrapper:
         self.__cur.execute(sql)
         sql = "USE diabetes_monitor"
         self.__cur.execute(sql)
+        sql = "SET autocommit=1;"
+        self.__cur.execute(sql)
         self.__create_user_info_table()
         self.__create_patient_table()
         self.__create_meals_table()
@@ -89,15 +91,20 @@ class dbWrapper:
     # User id is made the same in user_info, patient, and user_lookup tables.
     def add_patient(self, patient_id, lifestyle_info, diabetes_type, username, password,
                     first_name, middle_initial, last_name):
-        sql = "INSERT INTO user_info (id, password, first_name, middle_initial, last_name)" \
-              "VALUES('"+str(patient_id)+"', '"+password+"', '"+first_name+"', '"+middle_initial+"', '"+last_name+"');"
+        sql = "SELECT * FROM user_info WHERE id = "+str(patient_id)+";"
         self.__cur.execute(sql)
-        sql = "INSERT INTO user_lookup (username, id) " \
-              "VALUES('" + username + "', '" + str(patient_id) + "');"
-        self.__cur.execute(sql)
-        sql = "INSERT INTO patient (id, lifestyle_info, diabetes_type)" \
-              "VALUES('"+str(patient_id)+"', '"+lifestyle_info+"', '"+str(diabetes_type)+"');"
-        self.__cur.execute(sql)
+        result = self.__cur.fetchall()
+        if len(result) == 0:
+            sql = "INSERT INTO user_info (id, password, first_name, middle_initial, last_name) " \
+                  "VALUES (" + str(patient_id) + ", '" + password + "', '" + first_name + "', '" \
+                  + middle_initial + "', '" + last_name + "');"
+            self.__cur.execute(sql)
+            sql = "INSERT INTO user_lookup (username, id) " \
+                  "VALUES('" + username + "', " + str(patient_id) + ");"
+            self.__cur.execute(sql)
+            sql = "INSERT INTO patient (id, lifestyle_info, diabetes_type)" \
+                  "VALUES('" + str(patient_id) + "', '" + lifestyle_info + "', '" + str(diabetes_type) + "');"
+            self.__cur.execute(sql)
 
     # # Gets the current id that is auto-incremented in user_info table.
     # def __get_user_info_current_index(self):
