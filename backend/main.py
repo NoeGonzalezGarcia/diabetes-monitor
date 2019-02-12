@@ -3,6 +3,7 @@
 import dateparser
 from flask import Flask, request, abort
 from flask_cors import CORS
+import encryption
 import dbWrapper
 
 username = "admin2"
@@ -11,6 +12,8 @@ app = Flask(__name__)
 CORS(app)
 wrapper = dbWrapper.dbWrapper("root", "root33")
 wrapper.add_patient(5, "I live wonderfully", 1, username, "1234", "Joe", "R", "Smith")
+e, keyCombo = generateKeys()
+pub, pri = keyCombo
 
 
 @app.route('/heartbeat', methods=['GET'])
