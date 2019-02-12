@@ -2,7 +2,7 @@
 from pprint import pprint as pp
 from flask import Flask, flash, redirect, render_template, request, url_for, abort
 from flask_cors import CORS
-from .dbWrapper import *
+import dbWrapper
 import dateparser
 
 app = Flask(__name__)
@@ -71,7 +71,7 @@ def post_method():
 
 @app.route('/delete/<login_key>/<row_key>', methods=['DELETE'])
 def delete_entry():
-    #make database call here
+    # make database call here
     return "This delete method deletes a new entry based on login key, row key"
 
 
