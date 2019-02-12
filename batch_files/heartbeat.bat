@@ -1,4 +1,4 @@
 ECHO OFF
-cd C:\Users\albrechter\Documents\diabetes\diabetes-monitor\backend\heartbeatserver
+cd %1\backend\heartbeatserver
 python main.py
 PAUSE

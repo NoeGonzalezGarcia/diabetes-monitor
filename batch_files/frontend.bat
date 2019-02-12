@@ -1,5 +1,5 @@
 ECHO OFF
-cd C:\Users\albrechter\Documents\diabetes\diabetes-monitor\frontend
+cd %1\frontend
 call npm install
 call npm start
 PAUSE
