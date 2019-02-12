@@ -1,14 +1,14 @@
 #!/usr/bin/env python
-from pprint import pprint as pp
-from flask import Flask, flash, redirect, render_template, request, url_for, abort
+
+import dateparser
+from flask import Flask, request, abort
 from flask_cors import CORS
 import dbWrapper
-import dateparser
 
 app = Flask(__name__)
 CORS(app)
-wrapper = dbWrapper("admin", "admin")
-wrapper.add_patient("I live horribly", 1, "admin", "1234", "Joe", "R", "Smith")
+wrapper = dbWrapper.dbWrapper("root", "root33")
+wrapper.add_patient(5, "I live wonderfully", 1, "admin2", "1234", "Joe", "R", "Smith")
 
 
 @app.route('/heartbeat', methods=['GET'])
@@ -32,7 +32,7 @@ def relogin():
     return "This method will reauthenticate the user with stored credentials"
 
 
-@app.route('/get_data/<', methods=['GET'])
+@app.route('/get_data/', methods=['GET'])
 def index():
     print("placeholder")
 
@@ -54,18 +54,21 @@ def put_method():
 def post_method():
     if not request.json:
         abort(404)
-    breakfast = request.json[1]
-    lunch = request.json[2]
-    dinner = request.json[3]
-    meals = {breakfast, lunch, dinner}
+    print(request.json)
+    breakfast = request.json['body'][0]
+    lunch = request.json['body'][1]
+    dinner = request.json['body'][2]
+    meals = list()
+    meals.append(breakfast)
+    meals.append(lunch)
+    meals.append(dinner)
     for i in meals:
         current_object = i
-        if i['calories'] != "null":
-            date = parse_date(current_object['date'])
-            wrapper.add_smbg_data("admin", date[1], date[2],
-                                  date[3], current_object['meal_type'],
-                                  current_object['blood_sugar']['pre'],
-                                  current_object['blood_sugar']['post'], current_object['calories'])
+        if i['Calories'] != "":
+            date = parse_date(current_object['Date'])
+            wrapper.add_smbg_data("admin2", date, current_object['Mealtype'],
+                                  current_object['BloodSugar']['pre'],
+                                  current_object['BloodSugar']['post'], current_object['Calories'])
     return "success"
 
 
@@ -82,6 +85,6 @@ def parse_date(date):
 
 
 if __name__=='__main__':
-   app.run(debug=True)
+   app.run(debug=False)
 
 

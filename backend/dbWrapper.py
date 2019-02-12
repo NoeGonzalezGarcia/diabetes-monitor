@@ -45,7 +45,7 @@ class dbWrapper:
     # Creates the SMBG data table if it doesn't exist already
     def __create_smbg_data_table(self):
         sql = "CREATE TABLE IF NOT EXISTS smbg_data (" \
-              "user_date_meal VARCHAR(20) NOT NULL," \
+              "user_date_meal VARCHAR(80) NOT NULL," \
               "id INTEGER UNSIGNED NOT NULL," \
               "meal_id INTEGER UNSIGNED NOT NULL," \
               "date DATE NOT NULL," \
@@ -119,7 +119,10 @@ class dbWrapper:
     def __lookup_patient_id(self, username):
         sql = "SELECT id FROM user_lookup WHERE username = '"+username+"';"
         self.__cur.execute(sql)
-        return self.__cur.fetchone()["id"]
+        result = self.__cur.fetchone()
+        a,b = result + (0, )
+        # print(a)
+        return result[0]
 
     def get_patient_info(self, username):
         id = self.__lookup_patient_id(username)
@@ -130,10 +133,12 @@ class dbWrapper:
     def add_smbg_data(self, username, date, meal, pre_meal_smbg, post_meal_smbg, caloric_intake):
         id = self.__lookup_patient_id(username)
         meal_id = self.__get_meal_index(meal)
+        date_formatted = date[2] + "-" + date[0] + "-" + date[1]
         sql = "INSERT INTO smbg_data (user_date_meal, id, meal_id, date, " \
               "pre_meal_smbg_level, post_meal_smbg_level, caloric_intake)" \
-              "VALUES("+id+"-"+date+"-"+meal_id+", "+id+", "+meal_id+", "+date+", " + \
-              pre_meal_smbg+", "+post_meal_smbg+", "+caloric_intake+");"
+              "VALUES('"+str(id)+"-"+date_formatted+"-"+str(meal_id)+"', "+str(id)+", "+str(meal_id)+", '"+date_formatted+"', " + \
+              str(pre_meal_smbg)+", "+str(post_meal_smbg)+", "+str(caloric_intake)+");"
+        print(sql)
         self.__cur.execute(sql)
 
     # Returns a formatted date string with a given day, month, year.
@@ -145,7 +150,9 @@ class dbWrapper:
     def __get_meal_index(self, meal_name):
         sql = "SELECT meal_id FROM meals WHERE meal_name = '"+meal_name+"';"
         self.__cur.execute(sql)
-        return self.__cur.fetchone()["meal_id"]
+        result = self.__cur.fetchone()
+        a,b = result + (0, )
+        return result[0]
 
     # Returns SMBG data as JSON for a particular username, on a particular date and meal_name
     def get_smbg_data(self, username, date, meal_name):
