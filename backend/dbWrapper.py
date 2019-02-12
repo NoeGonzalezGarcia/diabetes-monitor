@@ -152,9 +152,8 @@ class dbWrapper:
         return date.strftime('%Y-%m-%d')
 
     # Returns the meal index of the specified meal.
-    def __get_meal_index(self, meal_name, key, n):
+    def __get_meal_index(self, meal_name):
         print(meal_name)
-        m = decrypt2(self, key, n, meal_name)
         sql = "SELECT meal_id FROM meals WHERE meal_name = '"+meal_name+"';"
         self.__cur.execute(sql)
         result = self.__cur.fetchone()
@@ -164,7 +163,7 @@ class dbWrapper:
     # Returns SMBG data as JSON for a particular username, on a particular date and meal_name
     def get_smbg_data(self, username, date, meal_name, pri, e):
         id = self.__lookup_patient_id(username)
-        meal_id = self.__get_meal_index(meal_name, pri, e)
+        meal_id = self.__get_meal_index(meal_name)
         return self.__get_meal_data(id, date, meal_id, pri, e)
 
     # Returns SMBG data as JSON given a user id, date, and meal id
