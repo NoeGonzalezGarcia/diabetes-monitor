@@ -56,16 +56,23 @@ class dbWrapper:
 
     # Creates the meals table if it doesn't exist already. Includes Breakfast, Lunch, and Dinner.
     def __create_meals_table(self):
-        sql = "CREATE TABLE IF NOT EXISTS meals (" \
-              "meal_id INTEGER UNSIGNED NOT NULL," \
-              "meal_name VARCHAR(20) NOT NULL," \
-              "PRIMARY KEY (meal_id) )"
-        self.__cur.execute(sql)
-        meals = ["breakfast", "lunch", "dinner"]
-        for i, meal in enumerate(meals):
-            sql = "INSERT INTO meals (meal_id, meal_name)" \
-                  "VALUES("+str(i)+", '"+meal+"');"
+        table_exists = True
+        try:
+            sql = "SELECT 1 FROM meals LIMIT 1;"
             self.__cur.execute(sql)
+        except: # meals table doesn't exist
+            table_exists = False
+        if not table_exists:
+            sql = "CREATE TABLE IF NOT EXISTS meals (" \
+                  "meal_id INTEGER UNSIGNED NOT NULL," \
+                  "meal_name VARCHAR(20) NOT NULL," \
+                  "PRIMARY KEY (meal_id) )"
+            self.__cur.execute(sql)
+            meals = ["breakfast", "lunch", "dinner"]
+            for i, meal in enumerate(meals):
+                sql = "INSERT INTO meals (meal_id, meal_name)" \
+                      "VALUES("+str(i)+", '"+meal+"');"
+                self.__cur.execute(sql)
 
     # Creates the user_lookup table if it doesn't exist already.
     # Used to get the id of a particular user with their username.
