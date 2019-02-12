@@ -22,10 +22,10 @@ export default {
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['2/1/2019 Breakfast', '2/1/2019 Lunch', '2/1/2019 Dinner', '2/2/2019 Breakfast', '2/3/2019 Breakfast', '2/3/2019 Lunch'],
+            labels: ['Calories, Pre Meal, Post Meal'],
             datasets: [{
                 label: 'Blood Glucose',
-                data: [80, 100, 90, 88, 100, 110],
+                data: [resp.caloric_intake, resp.pre_meal_smbg, resp.post_meal_smbg],
                 borderColor: [
                     'rgba(255, 159, 64, 1)'
                 ],
@@ -52,7 +52,6 @@ export default {
                 .catch(e => {
                     this.errors.push(e)
                 })
-                console.log(self.resp)
             }
         },
         beforeMount(){
