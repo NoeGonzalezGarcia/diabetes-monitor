@@ -1,6 +1,7 @@
 import MySQLdb
 import datetime
 import json
+from .encryption import *
 
 
 class dbWrapper:
@@ -160,13 +161,13 @@ class dbWrapper:
         return result[0]
 
     # Returns SMBG data as JSON for a particular username, on a particular date and meal_name
-    def get_smbg_data(self, username, date, meal_name):
+    def get_smbg_data(self, username, date, meal_name, pri, e):
         id = self.__lookup_patient_id(username)
         meal_id = self.__get_meal_index(meal_name)
-        return self.__get_meal_data(id, date, meal_id)
+        return self.__get_meal_data(id, date, meal_id, pri, e)
 
     # Returns SMBG data as JSON given a user id, date, and meal id
-    def __get_meal_data(self, user_id, date, meal_id):
+    def __get_meal_data(self, user_id, date, meal_id, pri, e):
         date_formatted = date[2] + "-" + date[0] + "-" + date[1]
         key = "'" + str(user_id) + "-" + date_formatted + "-" + str(meal_id) + "'"
         sql = "SELECT user_date_meal, pre_meal_smbg_level, post_meal_smbg_level, caloric_intake FROM smbg_data" \
@@ -178,12 +179,12 @@ class dbWrapper:
         pre_meal_smbg = row[1]
         post_meal_smbg = row[2]
         caloric_intake = row[3]
-        return self.__create_meal_json_object(pre_meal_smbg, post_meal_smbg, caloric_intake)
+        return self.__create_meal_json_object(pre_meal_smbg, post_meal_smbg, caloric_intake, pri, e)
 
     # Creates a JSON of for a meal's SMBG data.
-    def __create_meal_json_object(self, pre_meal_smbg, post_meal_smbg, caloric_intake):
+    def __create_meal_json_object(self, pre_meal_smbg, post_meal_smbg, caloric_intake, pri, e):
         data = {}
-        data['pre_meal_smbg'] = pre_meal_smbg
-        data['post_meal_smbg'] = post_meal_smbg
-        data['caloric_intake'] = caloric_intake
+        data['pre_meal_smbg'] = decrypt(pri, e, pre_meal_smbg)
+        data['post_meal_smbg'] = decrypt(pri, e, post_meal_smbg)
+        data['caloric_intake'] = decrypt(pri, e, caloric_intake)
         return json.dumps(data)
