@@ -18,11 +18,12 @@ class dbWrapper:
         self.__create_patient_table()
         self.__create_meals_table()
         self.__create_smbg_data_table()
+        self.__create_user_lookup_table()
 
     # Creates the user_info table if it doesn't exist already
     def __create_user_info_table(self):
         sql = "CREATE TABLE IF NOT EXISTS user_info (" \
-              "id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT," \
+              "id INTEGER UNSIGNED NOT NULL," \
               "password VARCHAR(255) NOT NULL," \
               "first_name VARCHAR(80) NOT NULL," \
               "middle_initial VARCHAR(20)," \
@@ -56,16 +57,23 @@ class dbWrapper:
 
     # Creates the meals table if it doesn't exist already. Includes Breakfast, Lunch, and Dinner.
     def __create_meals_table(self):
-        sql = "CREATE TABLE IF NOT EXISTS meals (" \
-              "meal_id INTEGER UNSIGNED NOT NULL," \
-              "meal_name VARCHAR(20) NOT NULL," \
-              "PRIMARY KEY (meal_id) )"
-        self.__cur.execute(sql)
-        meals = ["breakfast", "lunch", "dinner"]
-        for i, meal in enumerate(meals):
-            sql = "INSERT INTO meals (meal_id, meal_name)" \
-                  "VALUES("+str(i)+", '"+meal+"');"
+        table_exists = True
+        try:
+            sql = "SELECT 1 FROM meals LIMIT 1;"
             self.__cur.execute(sql)
+        except: # meals table doesn't exist
+            table_exists = False
+        if not table_exists:
+            sql = "CREATE TABLE IF NOT EXISTS meals (" \
+                  "meal_id INTEGER UNSIGNED NOT NULL," \
+                  "meal_name VARCHAR(20) NOT NULL," \
+                  "PRIMARY KEY (meal_id) )"
+            self.__cur.execute(sql)
+            meals = ["breakfast", "lunch", "dinner"]
+            for i, meal in enumerate(meals):
+                sql = "INSERT INTO meals (meal_id, meal_name)" \
+                      "VALUES("+str(i)+", '"+meal+"');"
+                self.__cur.execute(sql)
 
     # Creates the user_lookup table if it doesn't exist already.
     # Used to get the id of a particular user with their username.
@@ -79,25 +87,26 @@ class dbWrapper:
 
     # Adds a new patient to the database. Users id's are auto-incremented.
     # User id is made the same in user_info, patient, and user_lookup tables.
-    def add_patient(self, lifestyle_info, diabetes_type, username, password,
+    def add_patient(self, patient_id, lifestyle_info, diabetes_type, username, password,
                     first_name, middle_initial, last_name):
-        sql = "INSERT INTO user_info (password, first_name, middle_initial, last_name)" \
-              "VALUES("+password+", "+first_name+", "+middle_initial+", "+last_name+");"
-        self.__cur.execute(sql)
-        cur_user_index = self.__get_user_info_current_index()
-        sql = "INSERT INTO patient (id, lifestyle_info, diabetes_type)" \
-              "VALUES("+cur_user_index+", "+lifestyle_info+", "+diabetes_type+");"
+        sql = "INSERT INTO user_info (id, password, first_name, middle_initial, last_name)" \
+              "VALUES('"+str(patient_id)+"', '"+password+"', '"+first_name+"', '"+middle_initial+"', '"+last_name+"');"
         self.__cur.execute(sql)
         sql = "INSERT INTO user_lookup (username, id) " \
-              "VALUES("+username+", "+cur_user_index+");"
+              "VALUES('" + username + "', '" + str(patient_id) + "');"
+        self.__cur.execute(sql)
+        sql = "INSERT INTO patient (id, lifestyle_info, diabetes_type)" \
+              "VALUES('"+str(patient_id)+"', '"+lifestyle_info+"', '"+str(diabetes_type)+"');"
         self.__cur.execute(sql)
 
-    # Gets the current id that is auto-incremented in user_info table.
-    def __get_user_info_current_index(self):
-        sql = "SELECT 'AUTO_INCREMENT' FROM INFORMATION_SCHEMA.TABLES" \
-              "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_info';"
-        self.__cur.execute(sql)
-        return self.__cur.fetchone()["'AUTO_INCREMENT'"]
+    # # Gets the current id that is auto-incremented in user_info table.
+    # def __get_user_info_current_index(self):
+    #     sql = "SELECT 'AUTO_INCREMENT' FROM INFORMATION_SCHEMA.TABLES " \
+    #           "WHERE TABLE_SCHEMA = 'diabetes_monitor' AND TABLE_NAME = 'user_info';"
+    #     self.__cur.execute(sql)
+    #     result = self.__cur.fetchone()
+    #     print(result)
+    #     return result[0]
 
     # Gets the id of a user from their username.
     def __lookup_patient_id(self, username):
