@@ -44,10 +44,10 @@ export default {
     })
 },      methods: {
             Getget() {
-                console.log(this.resp)
+                var self = this
                 axios.get(`http://127.0.0.1:5000/get_data/`+ new Date().toString()+ '/Breakfast')
                 .then((response) => {
-                this.resp = response.value
+                self.resp = response.value
                 })
                 .catch(e => {
                     this.errors.push(e)
