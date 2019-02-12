@@ -12,7 +12,7 @@ def encrypt(key, n, message):
         i = ord(char) #character to unicode
         j = pow(i, key, n)
         text.append(j)
-    return ' '.join(text)
+    return ' '.join(str(text))
 
 def decrypt(key, n, message):
     text = []
