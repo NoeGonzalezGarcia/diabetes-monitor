@@ -1,9 +1,9 @@
 import math
 import random
 
-MAXNUM = 10000
+MAXNUM = 1000
 #MINNUM must be odd
-MINNUM = 1001
+MINNUM = 101
 LOWESTN = 1000
 
 def encrypt(key, n, message):
