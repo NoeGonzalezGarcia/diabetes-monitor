@@ -1,7 +1,6 @@
 import MySQLdb
 import datetime
 import json
-import encrypt, decrypt
 
 
 class dbWrapper:
@@ -184,7 +183,15 @@ class dbWrapper:
     # Creates a JSON of for a meal's SMBG data.
     def __create_meal_json_object(self, pre_meal_smbg, post_meal_smbg, caloric_intake, pri, e):
         data = {}
-        data['pre_meal_smbg'] = decrypt(pri, e, pre_meal_smbg)
-        data['post_meal_smbg'] = decrypt(pri, e, post_meal_smbg)
-        data['caloric_intake'] = decrypt(pri, e, caloric_intake)
+        data['pre_meal_smbg'] = decrypt2(self, pri, e, pre_meal_smbg)
+        data['post_meal_smbg'] = decrypt2(self, pri, e, post_meal_smbg)
+        data['caloric_intake'] = decrypt2(self, pri, e, caloric_intake)
         return json.dumps(data)
+
+def decrypt2(self, key, n, message):
+    text = []
+    for char in message:
+        i = pow(char, key, n)
+        j = chr(i)
+        text.append(j)
+    return ''.join(text)
