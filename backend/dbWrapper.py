@@ -49,9 +49,9 @@ class dbWrapper:
               "id INTEGER UNSIGNED NOT NULL," \
               "meal_id INTEGER UNSIGNED NOT NULL," \
               "date DATE NOT NULL," \
-              "pre_meal_smbg_level INTEGER UNSIGNED NOT NULL," \
-              "post_meal_smbg_level INTEGER UNSIGNED NOT NULL," \
-              "caloric_intake INTEGER UNSIGNED NOT NULL," \
+              "pre_meal_smbg_level VARCHAR(255) NOT NULL," \
+              "post_meal_smbg_level VARCHAR(255) NOT NULL," \
+              "caloric_intake VARCHAR(255) NOT NULL," \
               "PRIMARY KEY (user_date_meal)," \
               "FOREIGN KEY (id) REFERENCES user_info(id)," \
               "FOREIGN KEY (meal_id) REFERENCES meals(meal_id) )"
@@ -141,8 +141,8 @@ class dbWrapper:
         if len(result) == 0:
             sql = "INSERT INTO smbg_data (user_date_meal, id, meal_id, date, " \
                   "pre_meal_smbg_level, post_meal_smbg_level, caloric_intake)" \
-                  "VALUES("+key+", "+str(id)+", "+str(meal_id)+", '"+date_formatted+"', " + \
-                  str(pre_meal_smbg)+", "+str(post_meal_smbg)+", "+str(caloric_intake)+");"
+                  "VALUES("+key+", "+str(id)+", "+str(meal_id)+", '"+date_formatted+"', '" + \
+                  str(pre_meal_smbg)+"', '"+str(post_meal_smbg)+"', '"+str(caloric_intake)+"');"
             # print(sql)
             self.__cur.execute(sql)
 
@@ -153,7 +153,6 @@ class dbWrapper:
 
     # Returns the meal index of the specified meal.
     def __get_meal_index(self, meal_name):
-        print('OIY2')
         print(meal_name)
         sql = "SELECT meal_id FROM meals WHERE meal_name = '"+meal_name+"';"
         self.__cur.execute(sql)
