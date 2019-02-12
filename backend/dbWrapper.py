@@ -134,12 +134,17 @@ class dbWrapper:
         id = self.__lookup_patient_id(username)
         meal_id = self.__get_meal_index(meal)
         date_formatted = date[2] + "-" + date[0] + "-" + date[1]
-        sql = "INSERT INTO smbg_data (user_date_meal, id, meal_id, date, " \
-              "pre_meal_smbg_level, post_meal_smbg_level, caloric_intake)" \
-              "VALUES('"+str(id)+"-"+date_formatted+"-"+str(meal_id)+"', "+str(id)+", "+str(meal_id)+", '"+date_formatted+"', " + \
-              str(pre_meal_smbg)+", "+str(post_meal_smbg)+", "+str(caloric_intake)+");"
-        print(sql)
+        key = "'"+str(id)+"-"+date_formatted+"-"+str(meal_id)+"'"
+        sql = "SELECT * FROM smbg_data WHERE user_date_meal = "+key+";"
         self.__cur.execute(sql)
+        result = self.__cur.fetchall()
+        if len(result) == 0:
+            sql = "INSERT INTO smbg_data (user_date_meal, id, meal_id, date, " \
+                  "pre_meal_smbg_level, post_meal_smbg_level, caloric_intake)" \
+                  "VALUES("+key+", "+str(id)+", "+str(meal_id)+", '"+date_formatted+"', " + \
+                  str(pre_meal_smbg)+", "+str(post_meal_smbg)+", "+str(caloric_intake)+");"
+            # print(sql)
+            self.__cur.execute(sql)
 
     # Returns a formatted date string with a given day, month, year.
     def __make_date(self, day, month, year):
@@ -162,14 +167,17 @@ class dbWrapper:
 
     # Returns SMBG data as JSON given a user id, date, and meal id
     def __get_meal_data(self, user_id, date, meal_id):
-        key = user_id+"_"+date+"_"+meal_id
+        date_formatted = date[2] + "-" + date[0] + "-" + date[1]
+        key = "'" + str(user_id) + "-" + date_formatted + "-" + str(meal_id) + "'"
         sql = "SELECT user_date_meal, pre_meal_smbg_level, post_meal_smbg_level, caloric_intake FROM smbg_data" \
-              "WHERE user_date_meal = '"+key+"';"
+              " WHERE user_date_meal = "+key+";"
+        #print(sql)
         self.__cur.execute(sql)
         row = self.__cur.fetchone()
-        pre_meal_smbg = row["pre_meal_smbg_level"]
-        post_meal_smbg = row["post_meal_smbg_level"]
-        caloric_intake = row["caloric_intake"]
+        #print(row)
+        pre_meal_smbg = row[1]
+        post_meal_smbg = row[2]
+        caloric_intake = row[3]
         return self.__create_meal_json_object(pre_meal_smbg, post_meal_smbg, caloric_intake)
 
     # Creates a JSON of for a meal's SMBG data.
