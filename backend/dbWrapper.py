@@ -119,7 +119,10 @@ class dbWrapper:
     def __lookup_patient_id(self, username):
         sql = "SELECT id FROM user_lookup WHERE username = '"+username+"';"
         self.__cur.execute(sql)
-        return self.__cur.fetchone()["id"]
+        result = self.__cur.fetchone()
+        a,b = result + (0, )
+        # print(a)
+        return result[0]
 
     def get_patient_info(self, username):
         id = self.__lookup_patient_id(username)
