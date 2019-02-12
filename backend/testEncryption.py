@@ -1,4 +1,4 @@
-from encryption import *
+from .encryption import *
 
 def main():
     print("Generating keys")
