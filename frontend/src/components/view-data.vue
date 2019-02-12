@@ -1,4 +1,4 @@
-<template>
+<template >
     <div id='view-data'>
         <div id='content'>
             <canvas ref='chart'></canvas>
@@ -36,19 +36,22 @@ export default {
                     }
                 }]
             }
-        },
-        methods: {
+        }
+    })
+},      methods: {
             Getget() {
+                let resp = ''
                 axios.get(`http://127.0.0.1:5000/get_data/`+ new Date().toString()+ '/breakfast')
                 .then(response => {this.resp = response})
                 .catch(e => {
                     this.errors.push(e)
                 })
-                console.log(resp)
+                console.log('Get response: '+resp)
             }
-        }             
-    })
-}
+        },
+        beforeMount(){
+            this.Getget()
+        }          
 }
 </script>
 
