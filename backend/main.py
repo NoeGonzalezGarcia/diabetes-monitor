@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)
 wrapper = dbWrapper.dbWrapper("root", "root33")
 wrapper.add_patient(5, "I live wonderfully", 1, username, "1234", "Joe", "R", "Smith")
-e, keyCombo = generateKeys()
+e, keyCombo = encryption.generateKeys()
 pub, pri = keyCombo
 
 
@@ -77,9 +77,9 @@ def post_method():
         current_object = i
         if i['Calories'] != "":
             date = parse_date(current_object['Date'])
-            wrapper.add_smbg_data("admin2", date, encrypt(pub, e, current_object['Mealtype']),
-                                  encrypt(pub, e, current_object['BloodSugar']['pre']),
-                                  encrypt(pub, e, current_object['BloodSugar']['post']), encrypt(pub, e, current_object['Calories']))
+            wrapper.add_smbg_data("admin2", date, encryption.encrypt(pub, e, current_object['Mealtype']),
+                                  encryption.encrypt(pub, e, current_object['BloodSugar']['pre']),
+                                  encryption.encrypt(pub, e, current_object['BloodSugar']['post']), encryption.encrypt(pub, e, current_object['Calories']))
     return "success"
 
 
