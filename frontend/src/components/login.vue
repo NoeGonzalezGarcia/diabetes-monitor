@@ -49,6 +49,8 @@
   </v-form>
 </template>
 <script>
+// import {generateKeys} from '../encryption.js'
+// console.log(generateKeys())
 export default {
   name: 'Login',
   data: () => ({
@@ -64,11 +66,5 @@ export default {
       v => /.+@.+/.test(v) || 'E-mail must be valid'
     ]
   })
-//   mounted () {
-//     axios
-//       .get('INSERT_ENDPOINT_HERE')
-//       .then(response => (this.data = response)) //probably a get to test to see if theyre equiv.
-//       //probably putting all of this data into JSON, and then do the put or something like that
-//   }
 }
 </script>

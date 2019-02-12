@@ -64,7 +64,7 @@ def post_method():
     meals.append(dinner)
     for i in meals:
         current_object = i
-        if i['Calories'] != "null":
+        if i['Calories'] != "":
             date = parse_date(current_object['Date'])
             wrapper.add_smbg_data("admin2", date, current_object['Mealtype'],
                                   current_object['BloodSugar']['pre'],
