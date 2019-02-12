@@ -13,7 +13,7 @@ export default {
   name: 'view-data',
     data () {
     return {
-     resp:{}
+     resp:''
     }   
   },
   mounted() {
