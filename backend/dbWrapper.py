@@ -153,6 +153,7 @@ class dbWrapper:
 
     # Returns the meal index of the specified meal.
     def __get_meal_index(self, meal_name):
+        print(meal_name)
         sql = "SELECT meal_id FROM meals WHERE meal_name = '"+meal_name+"';"
         self.__cur.execute(sql)
         result = self.__cur.fetchone()
