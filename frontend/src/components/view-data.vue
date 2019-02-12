@@ -11,9 +11,11 @@ import Chart from 'chart.js'
 import axios from 'axios'
 export default {
   name: 'view-data',
-  data: () => ({
-    resp: ''
-  }),
+    data () {
+    return {
+     resp:{}
+    }   
+  },
   mounted() {
     var chart = this.$refs.chart
     var ctx = chart.getContext("2d")
@@ -44,7 +46,7 @@ export default {
             Getget() {
                 axios.get(`http://127.0.0.1:5000/get_data/`+ new Date().toString()+ '/Breakfast')
                 .then((response) => {
-                console.log(response.data)
+                this.resp = response
                 })
                 .catch(e => {
                     this.errors.push(e)
