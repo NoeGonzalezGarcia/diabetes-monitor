@@ -190,9 +190,10 @@ class dbWrapper:
         return json.dumps(data)
 
     def decrypt2(self, key, n, message):
-        text = []
-        for char in message:
+        text = message.split(" ")
+        res = []
+        for char in text:
             i = pow(char, key, n)
             j = chr(i)
-            text.append(j)
-        return ''.join(text)
+            res.append(j)
+        return ''.join(res)
