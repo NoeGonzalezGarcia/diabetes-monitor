@@ -12,7 +12,10 @@ username = "admin2"
 
 app = Flask(__name__)
 CORS(app)
-wrapper = dbWrapper.dbWrapper("root", "root33")
+with open('credentials.txt', 'r') as doc:
+    s = doc.read()
+creds = s.split("\n")
+wrapper = dbWrapper.dbWrapper(creds[0], creds[1])
 wrapper.add_patient(5, "I live wonderfully", 1, username, "1234", "Joe", "R", "Smith")
 e, keyCombo = encryption.generateKeys()
 pub, pri = keyCombo
