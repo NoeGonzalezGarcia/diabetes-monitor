@@ -4,7 +4,7 @@
             <v-flex xs12 sm9 offset-sm2 align-center justify-center >
                 <v-card class="elevation-12" style="border-radius:25px;" height="800px">
                     <v-container>
-                    <h1>Hello {{name}}</h1>
+                    <h1>Hello Meredith</h1>
                         <form>
                             <v-layout row style="margin-top:15px">
                                 <v-flex md4>
@@ -85,7 +85,7 @@
                                 </v-flex>
                                 <v-flex md4>
                                     <v-text-field
-                                        v-model="resp[2].BloodSugar.pre"
+                                        v-model="resp[2].BloodSugar.post"
                                         :rules="bloodSugarRules"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
@@ -109,6 +109,7 @@
 <script>
 import axios from 'axios'
 import Datepicker from 'vuejs-datepicker'
+import {encrypt} from '../encryption.js'
 export default {
   name: 'LogData',
   data: () => ({
@@ -142,12 +143,18 @@ export default {
     }],
     calorieMask: '#####',
     valid: false,
+    key: '',
+    eval: '',
+    key_resp: '',
     bloodSugarRules: [
       v => /^[0-9]{2,3}$/.test(v) || 'Must be a valid blood sugar level'
     ]
   }),
   methods: {
     postPost() {
+        this.resp[0].BloodSugar.pre = encrypt(this.key, this.eval, this.resp[0].BloodSugar.pre)
+        this.resp[0].BloodSugar.post = encrypt(this.key, this.eval, this.resp[0].BloodSugar.post)
+        this.resp[0].calories = encrypt(this.key, this.eval, this.resp[0].Calories)
         axios.put(`http://127.0.0.1:5000/new_data`, {
         body: this.resp
         })
@@ -160,11 +167,30 @@ export default {
         this.resp[0].date = date.toString()
         this.resp[1].date = date.toString()
         this.resp[2].date = date.toString()
-    }
+    },
+    async GetKey() {
+        var self = this
+        await axios.get(`http://127.0.0.1:5000/get_key`)
+        .then(function (response) {
+        self.key_resp = response.data
+        return self.key_resp
+        })
+        .catch(e => {
+            console.log('err')
+            this.errors.push(e)
+        })
+        this.key_resp = this.key_resp.split(' ')
+        this.key = parseInt(this.key_resp[0])
+        this.eval = parseInt(this.key_resp[1])
+        console.log(this.key)
+        console.log(this.eval)
+    }    
   },
   components: {
     Datepicker
-  }
+  },beforeMount(){
+    this.GetKey()
+  }      
 }
 </script>
 <style>

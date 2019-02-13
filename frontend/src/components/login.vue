@@ -49,8 +49,6 @@
   </v-form>
 </template>
 <script>
-// import {generateKeys} from '../encryption.js'
-// console.log(generateKeys())
 export default {
   name: 'Login',
   data: () => ({

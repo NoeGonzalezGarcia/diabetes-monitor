@@ -6,19 +6,34 @@ export function encrypt(key, n, message){
     let text = []
     for (let i = 0; i < message.length; i++){
         let val = message.charCodeAt(i)
-        let j = Math.pow(i,key)%n
-        text[i] = j
+        text[i] = expmod(val,key,n)
     }
-    return text
+    let res = ''
+    for(let k = 0; k< text.length; k++){
+        res = res+text[k].toString() + ' '
+    }
+    return res
 }
-export function decrypt(key, n, message){
-    let text = []
-    for (i = 0; i < message.length; i++){
-        let val = Math.pow(i,key)%n
-        let j = String.fromCharCode(val)
-        text[i] = j;
+function expmod( base, exp, mod ){
+    if (exp == 0) return 1;
+    if (exp % 2 == 0){
+      return Math.pow( expmod( base, (exp / 2), mod), 2) % mod;
     }
-    return text.join("")
+    else {
+      return (base * expmod( base, (exp - 1), mod)) % mod;
+    }
+  }
+export function decrypt(key, n, message){
+    let text = message.split(' ')
+    let res = []
+    for (i = 0; i < message.length; i++){
+        if(message[i] !== ''){
+            let val = Math.pow(i,key)%n
+            let j = String.fromCharCode(val)
+            text[i] = j;
+        }
+    }
+    return ''.join(res)
 }
 
 export function generateKeys(){
@@ -53,7 +68,8 @@ function mi2(v){
         n = n/2
         i++
     }
-    for(let j = 3; parseInt(Math.sqrt(n), 10) +1; j+=2){
+    let val =  parseInt(Math.sqrt(n), 10) +1
+    for(let j = 3;j < val; j+=2){
         while(n%j === 0){
             factors[i] = j
             n = n/j
@@ -65,11 +81,10 @@ function mi2(v){
     }
     let d = 1
     for(let k = 0; k < factors.length; k++){
-        d*=x
+        d*=factors[k]
     }
     let e = factors[factors.length - 1]
     d /= e
-    console.log('test')
     return [parseInt(d), parseInt(e)]
 }
 function gcd(a,b){
