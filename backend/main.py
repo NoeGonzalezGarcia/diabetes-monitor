@@ -74,6 +74,10 @@ def put_method():
 
 @app.route('/get_key', methods=['GET'])
 def get_key_method():
+    global currentE
+    global currentKeyCombo
+    global currentPri
+    global currentPub
     currentE, currentKeyCombo = encryption.generateKeys()
     currentPub, currentPri = currentKeyCombo
     return str(currentPub) + ' ' + str(currentE)
