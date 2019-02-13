@@ -184,9 +184,9 @@ class dbWrapper:
     # Creates a JSON of for a meal's SMBG data.
     def __create_meal_json_object(self, pre_meal_smbg, post_meal_smbg, caloric_intake, pri, e, publicKey, publicE):
         data = {}
-        data['pre_meal_smbg'] = self.encrypt2(publicKey, publicE, self.decrypt2(pri, e, pre_meal_smbg))
-        data['post_meal_smbg'] = self.encrypt2(publicKey, publicE, self.decrypt2(pri, e, post_meal_smbg))
-        data['caloric_intake'] = self.encrypt2(publicKey, publicE, self.decrypt2(pri, e, caloric_intake))
+        data['pre_meal_smbg'] = self.encrypt2(int(publicKey), int(publicE), int(self.decrypt2(pri, e, pre_meal_smbg)))
+        data['post_meal_smbg'] = self.encrypt2(int(publicKey), int(publicE), int(self.decrypt2(pri, e, post_meal_smbg)))
+        data['caloric_intake'] = self.encrypt2(int(publicKey), int(publicE), int(self.decrypt2(pri, e, caloric_intake)))
         return json.dumps(data)
 
     def decrypt2(self, key, n, message):
