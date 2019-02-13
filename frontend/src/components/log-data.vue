@@ -116,6 +116,7 @@
 import axios from 'axios'
 import Datepicker from 'vuejs-datepicker'
 import {encrypt} from '../encryption.js'
+var cloneDeep = require('lodash.clonedeep')
 export default {
   name: 'LogData',
   data: () => ({
@@ -159,22 +160,18 @@ export default {
   }),
   methods: {
     postPost() {
-        let temp = [] 
+        const copy = cloneDeep(this.resp)
         for(let i = 0; i < 3; i++){
-            temp.push(this.resp[i].BloodSugar.pre)
-            temp.push(this.resp[i].BloodSugar.post)
-            temp.push(this.resp[i].Calories)
             if(this.resp[i].BloodSugar.pre !== ''){
                 this.resp[i].BloodSugar.pre = encrypt(this.key, this.eval, this.resp[i].BloodSugar.pre)
             }
             if(this.resp[i].BloodSugar.post !== ''){
                 this.resp[i].BloodSugar.post = encrypt(this.key, this.eval, this.resp[i].BloodSugar.post)
-            }
+           }
             if(this.resp[i].Calories !== ''){
                 this.resp[i].Calories = encrypt(this.key, this.eval, this.resp[i].Calories)
             }
         }
-        console.log(temp)
         axios.put(`http://127.0.0.1:5000/new_data`, {
         body: this.resp
         })
@@ -182,11 +179,7 @@ export default {
         .catch(e => {
         this.errors.push(e)
         })
-        for(let i = 0; i < 3; i++){
-            this.resp[i].BloodSugar.pre = temp.shift()
-            this.resp[i].BloodSugar.post = temp.shift()
-            this.resp[i].Calories = temp.shift()
-        }
+        this.resp = copy
     }, 
     getDate(date){
         this.resp[0].date = date.toString()
@@ -201,14 +194,11 @@ export default {
         return self.key_resp
         })
         .catch(e => {
-            console.log('err')
             this.errors.push(e)
         })
         this.key_resp = this.key_resp.split(' ')
         this.key = parseInt(this.key_resp[0])
         this.eval = parseInt(this.key_resp[1])
-        console.log(this.key)
-        console.log(this.eval)
     }    
   },
   components: {

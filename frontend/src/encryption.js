@@ -26,14 +26,14 @@ function expmod( base, exp, mod ){
 export function decrypt(key, n, message){
     let text = message.split(' ')
     let res = []
-    for (i = 0; i < message.length; i++){
-        if(message[i] !== ''){
-            let val = Math.pow(i,key)%n
+    for (let i = 0; i < text.length; i++){
+        if(text[i] !== ''){
+            let val = expmod(parseInt(text[i]),key,n)
             let j = String.fromCharCode(val)
-            text[i] = j;
+            res[i] = j;
         }
     }
-    return ''.join(res)
+    return res.join('')
 }
 
 export function generateKeys(){
@@ -54,7 +54,7 @@ export function generateKeys(){
             n = p1 * p2
         }
         nn = (p1 - 1) * (p2 -1)
-        k = nn++
+        k = ++nn
         de = mi2(k)
     }
     return [n, de]
@@ -62,22 +62,19 @@ export function generateKeys(){
 function mi2(v){
     let n = v
     let factors = []
-    let i  = 0
     while(n%2 === 0){
-        factors[i] = 2
+        factors.push(2)
         n = n/2
-        i++
     }
     let val =  parseInt(Math.sqrt(n), 10) +1
     for(let j = 3;j < val; j+=2){
         while(n%j === 0){
-            factors[i] = j
+            factors.push(j)
             n = n/j
-            i++
         }
     }
     if(n > 2){
-        factors[i] = n
+        factors.push(n)
     }
     let d = 1
     for(let k = 0; k < factors.length; k++){

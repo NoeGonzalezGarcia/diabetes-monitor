@@ -1,60 +1,77 @@
 <template >
     <div id='view-data'>
-        <div id='content'>
-            <canvas ref='chart'></canvas>
-        </div>
+        <v-container bg fill-height grid-list-md text-xs-center>
+            <v-layout row wrap align-center>
+                <v-flex xs12 sm9 offset-sm2 align-center justify-center >
+                    <v-card class="elevation-12" style="border-radius:25px;" height="800px">
+                        <h2 style="margin-top:40px">Breakfast Details</h2>
+                            <v-layout row style="margin-top:15px">
+                                <v-flex md4>
+                                    <v-text-field
+                                        v-model="resp.caloric_intake "
+                                        label="Calories"
+                                        color="blue"
+                                        disabled
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex md4>
+                                    <v-text-field
+                                        v-model="resp.pre_meal_smbg"
+                                        label="Pre-Meal Blood Sugar"
+                                        color="blue"
+                                        disabled
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex md>
+                                    <v-text-field
+                                        v-model="resp.post_meal_smbg"
+                                        label="Post-Meal Blood Sugar"
+                                        color="blue"
+                                        disabled
+                                    ></v-text-field>
+                                </v-flex>
+                            </v-layout>
+                    </v-card>
+                </v-flex>
+            </v-layout>
+        </v-container>
     </div>
 </template>
 
 <script>
 import Chart from 'chart.js'
 import axios from 'axios'
+import {generateKeys, decrypt} from '../encryption.js'
 export default {
   name: 'view-data',
     data () {
     return {
-     resp:''
+     resp:'',
+     PublicKey: '',
+     PrivateKey: '',
+     E: ''
     }   
-  },
-  mounted() {
-    var chart = this.$refs.chart
-    var ctx = chart.getContext("2d")
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Calories, Pre Meal, Post Meal'],
-            datasets: [{
-                label: 'Blood Glucose',
-                data: [this.resp.caloric_intake, this.resp.pre_meal_smbg, this.resp.post_meal_smbg],
-                borderColor: [
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    })
-},      methods: {
-            Getget() {
-                var self = this
-                var temp = ''
-                axios.get(`http://127.0.0.1:5000/get_data/`+ new Date().toString()+ '/Breakfast')
+  }, methods: {
+            async Getget() {
+                let temp = generateKeys()
+                this.E = temp[0]
+                this.PublicKey = temp[1][0]
+                this.PrivateKey = temp[1][1]
+                let self = this
+                let LunchTemp = ''
+                let DinnerTemp = ''
+                await axios.get(`http://127.0.0.1:5000/get_data/`+ new Date().toString()+ '/Breakfast/'+this.PublicKey+'/'+this.E)
                 .then(function (response) {
-                    this.temp = response.data
+                    self.resp = response.data
+                    return self.resp
                 })
                 .catch(e => {
                     this.errors.push(e)
                 })
-                this.resp = temp
-                console.log("Response: " + this.resp)
+                this.resp.caloric_intake = parseInt(decrypt(this.PrivateKey, this.E,this.resp.caloric_intake))
+                this.resp.pre_meal_smbg = parseInt(decrypt(this.PrivateKey, this.E, this.resp.pre_meal_smbg))
+                this.resp.post_meal_smbg = parseInt(decrypt(this.PrivateKey, this.E, this.resp.post_meal_smbg))
+                
             }
         },
         beforeMount(){
