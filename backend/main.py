@@ -17,8 +17,8 @@ wrapper.add_patient(5, "I live wonderfully", 1, username, "1234", "Joe", "R", "S
 e, keyCombo = encryption.generateKeys()
 pub, pri = keyCombo
 
-currentE, currentKeyCombo = 0, (0, 0)
-currentPub, currentPri = currentKeyCombo
+currentE, currentKeyCombo
+currentPub, currentPri
 
 
 @app.route('/heartbeat', methods=['GET'])
