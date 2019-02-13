@@ -87,9 +87,9 @@ def post_method():
     if not request.json:
         abort(404)
     print(request.json)
-    breakfast = request.json['body']['0']
-    lunch = request.json['body']['1']
-    dinner = request.json['body']['2']
+    breakfast = request.json['body'][0]
+    lunch = request.json['body'][1]
+    dinner = request.json['body'][2]
     meals = list()
     meals.append(breakfast)
     meals.append(lunch)

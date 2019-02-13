@@ -25,6 +25,7 @@
                                     <v-text-field
                                         v-model="resp[0].BloodSugar.pre"
                                         :rules="bloodSugarRules"
+                                        :mask="bloodSugarMask"
                                         label="Pre-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -33,6 +34,7 @@
                                     <v-text-field
                                         v-model="resp[0].BloodSugar.post"
                                         :rules="bloodSugarRules"
+                                        :mask="bloodSugarMask"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -52,6 +54,7 @@
                                     <v-text-field
                                         v-model="resp[1].BloodSugar.pre"
                                         :rules="bloodSugarRules"
+                                        :mask="bloodSugarMask"
                                         label="Pre-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -60,6 +63,7 @@
                                     <v-text-field
                                         v-model="resp[1].BloodSugar.post"
                                         :rules="bloodSugarRules"
+                                        :mask="bloodSugarMask"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -79,6 +83,7 @@
                                     <v-text-field
                                         v-model="resp[2].BloodSugar.pre"
                                         :rules="bloodSugarRules"
+                                        :mask="bloodSugarMask"
                                         label="Pre-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -87,6 +92,7 @@
                                     <v-text-field
                                         v-model="resp[2].BloodSugar.post"
                                         :rules="bloodSugarRules"
+                                        :mask="bloodSugarMask"
                                         label="Post-Meal Blood Sugar"
                                         color="blue"
                                     ></v-text-field>
@@ -148,13 +154,27 @@ export default {
     key_resp: '',
     bloodSugarRules: [
       v => /^[0-9]{2,3}$/.test(v) || 'Must be a valid blood sugar level'
-    ]
+    ],
+    bloodSugarMask: '###'
   }),
   methods: {
     postPost() {
-        this.resp[0].BloodSugar.pre = encrypt(this.key, this.eval, this.resp[0].BloodSugar.pre)
-        this.resp[0].BloodSugar.post = encrypt(this.key, this.eval, this.resp[0].BloodSugar.post)
-        this.resp[0].calories = encrypt(this.key, this.eval, this.resp[0].Calories)
+        let temp = [] 
+        for(let i = 0; i < 3; i++){
+            temp.push(this.resp[i].BloodSugar.pre)
+            temp.push(this.resp[i].BloodSugar.post)
+            temp.push(this.resp[i].Calories)
+            if(this.resp[i].BloodSugar.pre !== ''){
+                this.resp[i].BloodSugar.pre = encrypt(this.key, this.eval, this.resp[i].BloodSugar.pre)
+            }
+            if(this.resp[i].BloodSugar.post !== ''){
+                this.resp[i].BloodSugar.post = encrypt(this.key, this.eval, this.resp[i].BloodSugar.post)
+            }
+            if(this.resp[i].Calories !== ''){
+                this.resp[i].Calories = encrypt(this.key, this.eval, this.resp[i].Calories)
+            }
+        }
+        console.log(temp)
         axios.put(`http://127.0.0.1:5000/new_data`, {
         body: this.resp
         })
@@ -162,6 +182,11 @@ export default {
         .catch(e => {
         this.errors.push(e)
         })
+        for(let i = 0; i < 3; i++){
+            this.resp[i].BloodSugar.pre = temp.shift()
+            this.resp[i].BloodSugar.post = temp.shift()
+            this.resp[i].Calories = temp.shift()
+        }
     }, 
     getDate(date){
         this.resp[0].date = date.toString()
