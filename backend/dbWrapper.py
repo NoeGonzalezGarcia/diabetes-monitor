@@ -161,10 +161,10 @@ class dbWrapper:
         return result[0]
 
     # Returns SMBG data as JSON for a particular username, on a particular date and meal_name
-    def get_smbg_data(self, username, date, meal_name, pri, e):
+    def get_smbg_data(self, username, date, meal_name, pri, e, pub, pube):
         id = self.__lookup_patient_id(username)
         meal_id = self.__get_meal_index(meal_name)
-        return self.__get_meal_data(id, date, meal_id, pri, e)
+        return self.__get_meal_data(id, date, meal_id, pri, e, pub, pube)
 
     # Returns SMBG data as JSON given a user id, date, and meal id
     def __get_meal_data(self, user_id, date, meal_id, pri, e, publicKey, publicE):
