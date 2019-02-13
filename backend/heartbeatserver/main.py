@@ -26,7 +26,6 @@ def main():
             print("DISCONNECTED SYSTEM ADMIN ASSISTANCE NEEDED " + str(datetime.now()))
             if not text_sent and not first_connect:
                 sms.send_sys_admin_text()
-                send_email.send_sys_admin_email()
                 text_sent = True
 
 
