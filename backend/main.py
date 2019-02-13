@@ -87,10 +87,6 @@ def post_method():
     if not request.json:
         abort(404)
     print(request.json)
-    if (currentPri is None):
-        currentPri = 0
-    if (currentE is None):
-        currentE = 0
     breakfast = request.json['body'][0]
     lunch = request.json['body'][1]
     dinner = request.json['body'][2]
