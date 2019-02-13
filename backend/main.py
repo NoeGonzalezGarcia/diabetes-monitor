@@ -71,7 +71,7 @@ def put_method():
 def get_key_method():
     currentE, currentKeyCombo = encryption.generateKeys()
     currentPub, currentPri = currentKeyCombo
-    return currentPub + ' ' + currentE
+    return str(currentPub) + ' ' + str(currentE)
 
 @app.route('/new_data', methods=['PUT'])
 def post_method():
