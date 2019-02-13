@@ -99,8 +99,8 @@ def post_method():
         if i['Calories'] != "":
             date = parse_date(current_object['Date'])
             wrapper.add_smbg_data("admin2", date, current_object['Mealtype'],
-                                  encryption.decrypt(currentPri, currentE, encryption.encrypt(pub, e, current_object['BloodSugar']['pre'])),
-                                  encryption.decrypt(currentPri, currentE, encryption.encrypt(pub, e, current_object['BloodSugar']['post'])), encryption.decrypt(currentPri, currentE, encryption.encrypt(pub, e, current_object['Calories'])))
+                                  encryption.encrypt(pub, e, encryption.decrypt(currentPri, currentE, current_object['BloodSugar']['pre'])),
+                                  encryption.encrypt(pub, e, encryption.decrypt(currentPri, currentE, current_object['BloodSugar']['post'])), encryption.encrypt(pub, e, encryption.decrypt(currentPri, currentE, current_object['Calories'])))
     return "success"
 
 
