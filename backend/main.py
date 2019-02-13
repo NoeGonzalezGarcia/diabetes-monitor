@@ -20,8 +20,10 @@ wrapper.add_patient(5, "I live wonderfully", 1, username, "1234", "Joe", "R", "S
 e, keyCombo = encryption.generateKeys()
 pub, pri = keyCombo
 
-currentE, currentKeyCombo = 0, (0, 0)
-currentPub, currentPri = currentKeyCombo
+global currentE
+global currentKeyCombo
+global currentPub
+global currentPri
 
 
 @app.route('/heartbeat', methods=['GET'])
@@ -81,6 +83,10 @@ def post_method():
     if not request.json:
         abort(404)
     print(request.json)
+    if (currentPri is None):
+        currentPri = 0
+    if (currentE is None):
+        currentE = 0
     breakfast = request.json['body'][0]
     lunch = request.json['body'][1]
     dinner = request.json['body'][2]
